@@ -1,0 +1,5 @@
+package net.strokkur.config.testplugin;
+
+class Versions {
+    public static final String CONFIGURATE = "{{ configurate }}";
+}

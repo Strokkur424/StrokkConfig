@@ -8,13 +8,19 @@ jetbrains-annotations = "26.0.2"
 run-paper = "2.3.1"
 publishdata = "1.4.0"
 spotless = "7.0.2"
+blossom = "2.1.0"
+
+configurate = "4.2.0"
 
 [libraries]
 paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
 jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 
+configurate-hocon = { module = "org.spongepowered:configurate-hocon", version.ref = "configurate" }
+
 [plugins]
 run-paper = { id = "xyz.jpenilla.run-paper", version.ref = "run-paper" }
 publishdata = { id = "de.chojo.publishdata", version.ref = "publishdata" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+blossom = { id = "net.kyori.blossom", version.ref = "blossom" }

@@ -1,0 +1,7 @@
+name: TestPlugin
+version: $version
+api-version: '$mcVersion'
+author: Strokkur24
+
+main: net.strokkur.config.testplugin.TestPlugin
+loader: net.strokkur.config.testplugin.TestPluginLoader
