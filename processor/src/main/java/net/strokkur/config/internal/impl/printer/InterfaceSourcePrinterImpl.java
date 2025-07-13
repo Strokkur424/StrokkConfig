@@ -97,7 +97,7 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
                  * @author Strokkur24 - StrokkConfig
                  * @version {}
                  * @see {}
-                 * @see {} the generated implementation
+                 * @see {}
                  */""",
             model.getMetadata().getOriginalClass(),
             BuildConstants.VERSION,

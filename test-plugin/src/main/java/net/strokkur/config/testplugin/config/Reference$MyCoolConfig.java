@@ -16,7 +16,7 @@ import java.util.List;
  * @author Strokkur24 - StrokkConfig
  * @version 1.0.0
  * @see MyCoolConfigModel
- * @see Reference$MyCoolConfigImpl generated implementation
+ * @see Reference$MyCoolConfigImpl
  */
 @NullMarked
 public interface Reference$MyCoolConfig {
