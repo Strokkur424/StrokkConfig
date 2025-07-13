@@ -5,6 +5,7 @@ import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.strokkur.config.Format;
+import net.strokkur.config.annotations.ConfigFilePath;
 import net.strokkur.config.annotations.ConfigFormat;
 import net.strokkur.config.annotations.ConfigNonNull;
 import net.strokkur.config.annotations.CustomType;
@@ -21,6 +22,7 @@ import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
 @GenerateConfig("MyCoolConfig")
 @ConfigNonNull
 @ConfigFormat(Format.HOCON)
+@ConfigFilePath("config.conf")
 public class MyCoolConfigModel {
 
     public String name = "mpty";

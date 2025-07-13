@@ -8,6 +8,7 @@ dependencies {
     annotationProcessor(project(":strokk-config-processor"))
 
     compileOnly(libs.paper.api)
+    compileOnly(libs.configurate.hocon)
 }
 
 tasks.runServer {
