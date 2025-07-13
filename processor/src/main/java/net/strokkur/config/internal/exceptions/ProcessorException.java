@@ -1,10 +1,12 @@
 package net.strokkur.config.internal.exceptions;
 
 import net.strokkur.config.internal.util.MessagerWrapper;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import javax.lang.model.element.Element;
 
+@NullMarked
 public class ProcessorException extends Exception {
 
     private final @Nullable Element element;
