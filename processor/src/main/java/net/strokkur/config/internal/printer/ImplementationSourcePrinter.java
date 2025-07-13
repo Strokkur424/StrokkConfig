@@ -22,12 +22,12 @@ public interface ImplementationSourcePrinter extends SourcePrinter {
     void printImports();
     void printClassJavaDoc();
     void printClassDeclaration();
-    
+
     void printModelVariable();
     void printNestedSectionsVariables();
-    
+
     void printReloadMethodImplementation();
-    
+
     void printAccessMethods();
     void printUtilityMethods();
     void printNestedClasses();

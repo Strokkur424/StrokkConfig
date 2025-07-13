@@ -14,4 +14,13 @@ public interface ConfigModel {
     List<CustomType> getCustomTypes();
 
     List<ConfigSection> getSections();
+
+    interface Builder {
+        Builder setMetadata(ConfigMetadata metadata);
+        Builder addField(ConfigField field);
+        Builder addCustomType(CustomType type);
+        Builder addSection(ConfigSection section);
+
+        ConfigModel build();
+    }
 }

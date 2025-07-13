@@ -23,14 +23,14 @@ abstract class AbstractPrinter implements SourcePrinter {
     }
 
     @Override
-    public void setWriter(@Nullable Writer writer) {
-        this.writer = writer;
-    }
-
-    @Override
     @Nullable
     public Writer getWriter() {
         return this.writer;
+    }
+
+    @Override
+    public void setWriter(@Nullable Writer writer) {
+        this.writer = writer;
     }
 
     @Override
@@ -54,7 +54,7 @@ abstract class AbstractPrinter implements SourcePrinter {
         if (writer == null) {
             throw new IOException("No writer set.");
         }
-        
+
         writer.append(message.replace("{}", "%s").formatted(format));
         return this;
     }
@@ -64,7 +64,7 @@ abstract class AbstractPrinter implements SourcePrinter {
         if (writer == null) {
             throw new IOException("No writer set.");
         }
-        
+
         writer.append(indentString);
         writer.append(message.replace("{}", "%s").formatted(format));
         writer.append("\n");
@@ -76,7 +76,7 @@ abstract class AbstractPrinter implements SourcePrinter {
         if (writer == null) {
             throw new IOException("No writer set.");
         }
-        
+
         writer.append("\n");
         return this;
     }

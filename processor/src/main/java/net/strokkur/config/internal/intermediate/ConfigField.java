@@ -13,7 +13,7 @@ public interface ConfigField {
 
     Pattern NAME_CONVERSION_PATTERN = Pattern.compile("[A-Z][^A-Z]+");
 
-    ConfigType getFieldType();
+    FieldType getFieldType();
 
     String getFieldName();
 

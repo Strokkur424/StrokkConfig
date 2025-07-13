@@ -1,7 +1,7 @@
 package net.strokkur.config.internal.printer;
 
 import net.strokkur.config.internal.intermediate.ConfigField;
-import net.strokkur.config.internal.intermediate.ConfigType;
+import net.strokkur.config.internal.intermediate.FieldType;
 
 import java.util.Set;
 
@@ -14,7 +14,7 @@ public interface InterfaceSourcePrinter extends SourcePrinter {
     );
 
     Set<String> getAllImports();
-    
+
     void printPackage();
     void printImports();
     void printInterfaceJavaDoc();
@@ -29,5 +29,5 @@ public interface InterfaceSourcePrinter extends SourcePrinter {
     void printNestedClassesDefinitions();
 
     void printAccessMethod(ConfigField field);
-    void printNestedClass(ConfigType type);
+    void printNestedClass(FieldType type);
 }

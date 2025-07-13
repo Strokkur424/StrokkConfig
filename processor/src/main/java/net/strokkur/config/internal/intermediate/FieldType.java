@@ -5,9 +5,9 @@ import java.util.Set;
 /**
  * Internal representation of a config field's type.
  */
-public interface ConfigType {
+public interface FieldType {
 
-    String getFieldType();
+    String getClassString();
 
     default Set<String> getImports() {
         return Set.of();

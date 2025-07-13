@@ -1,7 +1,7 @@
 package net.strokkur.config.internal;
 
 import net.strokkur.config.internal.intermediate.ConfigField;
-import net.strokkur.config.internal.intermediate.ConfigType;
+import net.strokkur.config.internal.intermediate.FieldType;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -67,7 +67,7 @@ public class FieldTests {
         }
 
         @Override
-        public ConfigType getFieldType() {
+        public FieldType getFieldType() {
             return null;
         }
 

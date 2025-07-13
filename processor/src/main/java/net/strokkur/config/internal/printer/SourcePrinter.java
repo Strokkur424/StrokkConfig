@@ -10,10 +10,9 @@ public interface SourcePrinter {
     String INDENTATION = "\s\s\s\s";
 
     void print() throws IOException;
-
+    @Nullable
+    Writer getWriter();
     void setWriter(@Nullable Writer writer);
-    @Nullable Writer getWriter();
-
     void incrementIndent();
     void decrementIndent();
 

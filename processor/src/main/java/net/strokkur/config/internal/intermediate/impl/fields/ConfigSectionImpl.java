@@ -1,0 +1,43 @@
+package net.strokkur.config.internal.intermediate.impl.fields;
+
+import net.strokkur.config.internal.intermediate.ConfigField;
+import net.strokkur.config.internal.intermediate.ConfigSection;
+
+import javax.lang.model.element.TypeElement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class ConfigSectionImpl implements ConfigSection {
+
+    private final TypeElement typeElement;
+    private final List<ConfigField> fields = new ArrayList<>();
+    private boolean nonNull = true;
+
+    public ConfigSectionImpl(TypeElement typeElement) {
+        this.typeElement = typeElement;
+    }
+
+    public void addConfigField(ConfigField field) {
+        fields.add(field);
+    }
+
+    @Override
+    public boolean isDefaultNonNull() {
+        return nonNull;
+    }
+
+    public void setDefaultNonNull(boolean value) {
+        this.nonNull = value;
+    }
+
+    @Override
+    public List<ConfigField> getFields() {
+        return Collections.unmodifiableList(fields);
+    }
+
+    @Override
+    public String getClassString() {
+        return typeElement.toString();
+    }
+}
