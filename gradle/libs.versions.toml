@@ -1,0 +1,20 @@
+[versions]
+minecraft = "1.21.7"
+paper = "1.21.7-R0.1-SNAPSHOT"
+
+jspecify = "1.0.0"
+jetbrains-annotations = "26.0.2"
+
+run-paper = "2.3.1"
+publishdata = "1.4.0"
+spotless = "7.0.2"
+
+[libraries]
+paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+
+[plugins]
+run-paper = { id = "xyz.jpenilla.run-paper", version.ref = "run-paper" }
+publishdata = { id = "de.chojo.publishdata", version.ref = "publishdata" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
