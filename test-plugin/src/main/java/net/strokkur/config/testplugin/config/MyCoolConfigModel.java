@@ -3,35 +3,54 @@ package net.strokkur.config.testplugin.config;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.strokkur.config.Format;
 import net.strokkur.config.annotations.ConfigFilePath;
 import net.strokkur.config.annotations.ConfigFormat;
 import net.strokkur.config.annotations.ConfigNonNull;
+import net.strokkur.config.annotations.CustomParse;
 import net.strokkur.config.annotations.CustomType;
 import net.strokkur.config.annotations.CustomTypeReturn;
 import net.strokkur.config.annotations.GenerateConfig;
 import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
 
 import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
 
+@ConfigSerializable // Needed by Configurate
 @GenerateConfig("MyCoolConfig")
-@ConfigNonNull
-@ConfigFormat(Format.HOCON)
 @ConfigFilePath("config.conf")
-public class MyCoolConfigModel {
+@ConfigFormat(Format.HOCON)
+@ConfigNonNull
+class MyCoolConfigModel {
 
     public String name = "mpty";
     public List<String> aliases = List.of("pt");
     public int amountOfExpPerStuff = 200;
     public ItemDefinition itemDefinition = new ItemDefinition("diamond_sword", "<red><b>Destroyer 9000");
+    
+    public Messages messages = new Messages();
 
+    @ConfigSerializable
+    public static class Messages {
+        
+        @CustomParse("parseToMiniMessage")
+        public String runCommand;
+        
+        public Component parseToMiniMessage(String message, MiniMessage mm, TagResolver... resolvers) {
+            return mm.deserialize(message, resolvers);
+        }
+    }
+    
     @SuppressWarnings("UnstableApiUsage")
     @CustomType
+    @ConfigSerializable
     public static class ItemDefinition {
 
         public String type;

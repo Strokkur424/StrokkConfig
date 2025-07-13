@@ -1,5 +1,7 @@
 package net.strokkur.config.testplugin.config;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -59,4 +61,14 @@ public interface Reference$MyCoolConfig {
     int numberOfExpPerStuff();
 
     ItemStack itemDefinition(TagResolver... resolvers);
+
+    //
+    // Nested classes
+    //
+    
+    Messages messages();
+
+    interface Messages {
+        Component runCommand(MiniMessage mm, TagResolver... resolvers);
+    }
 }
