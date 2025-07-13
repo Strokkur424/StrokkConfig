@@ -13,5 +13,5 @@ public interface ConfigModel {
 
     List<CustomType> getCustomTypes();
 
-    List<ConfigSections> getSections();
+    List<ConfigSection> getSections();
 }

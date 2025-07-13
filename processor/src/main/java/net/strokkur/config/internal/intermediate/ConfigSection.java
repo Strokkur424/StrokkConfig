@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Internal representation of a nested, serialized config class.
  */
-public interface ConfigSections extends ConfigType {
+public interface ConfigSection extends ConfigType {
 
     boolean isDefaultNonNull();
 
