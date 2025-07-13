@@ -1,7 +1,7 @@
 package net.strokkur.config.internal.intermediate;
 
-import net.strokkur.config.internal.printer.SourcesPrinter;
+import net.strokkur.config.internal.printer.SourcePrinter;
 
 public interface ConfigFormat {
-    SourcesPrinter getSourcesPrinter();
+    SourcePrinter getSourcesPrinter();
 }
