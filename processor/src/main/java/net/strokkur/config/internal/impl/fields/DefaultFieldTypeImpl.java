@@ -1,4 +1,4 @@
-package net.strokkur.config.internal.intermediate.impl.fields;
+package net.strokkur.config.internal.impl.fields;
 
 import net.strokkur.config.internal.intermediate.FieldType;
 

@@ -1,4 +1,4 @@
-package net.strokkur.config.internal.intermediate.impl;
+package net.strokkur.config.internal.impl;
 
 import net.strokkur.config.internal.intermediate.ConfigFormat;
 import net.strokkur.config.internal.intermediate.ConfigMetadata;

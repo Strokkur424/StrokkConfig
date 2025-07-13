@@ -1,21 +1,28 @@
-package net.strokkur.config.internal.intermediate.impl.fields;
+package net.strokkur.config.internal.impl.fields;
 
 import net.strokkur.config.internal.intermediate.ConfigField;
-import net.strokkur.config.internal.intermediate.ConfigSection;
+import net.strokkur.config.internal.intermediate.CustomType;
+import org.jspecify.annotations.Nullable;
 
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ConfigSectionImpl implements ConfigSection {
+public class CustomTypeImpl implements CustomType {
 
     private final TypeElement typeElement;
     private final List<ConfigField> fields = new ArrayList<>();
+    private @Nullable ExecutableElement returnElement = null;
     private boolean nonNull = true;
 
-    public ConfigSectionImpl(TypeElement typeElement) {
+    public CustomTypeImpl(TypeElement typeElement) {
         this.typeElement = typeElement;
+    }
+
+    public void setReturnElement(ExecutableElement element) {
+        this.returnElement = element;
     }
 
     public void addConfigField(ConfigField field) {
@@ -34,6 +41,11 @@ public class ConfigSectionImpl implements ConfigSection {
     @Override
     public List<ConfigField> getFields() {
         return Collections.unmodifiableList(fields);
+    }
+
+    @Override
+    public @Nullable ExecutableElement getTypeReturn() {
+        return returnElement;
     }
 
     @Override
