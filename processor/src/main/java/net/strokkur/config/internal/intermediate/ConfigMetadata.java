@@ -6,8 +6,14 @@ package net.strokkur.config.internal.intermediate;
 public interface ConfigMetadata {
 
     String getFilePath();
-
-    String getClassName();
+    
+    String getPackage();
+    
+    String getOriginalClass();
+    
+    String getInterfaceClass();
+    
+    String getImplementationClass();
 
     ConfigFormat getFormat();
 

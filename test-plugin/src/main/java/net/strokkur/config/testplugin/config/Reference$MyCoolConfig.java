@@ -20,17 +20,17 @@ import java.util.List;
  */
 @NullMarked
 public interface Reference$MyCoolConfig {
-
+    
     //
     // Declared in the @ConfigFileName annotation.
     //
-
+    
     String FILE_PATH = "config.conf";
 
     //
     // Reloading
     //
-
+    
     /**
      * Reload the config file. This method uses the plugin's data path
      * as the target directory and resolves that with the {@link #FILE_PATH}.
@@ -40,7 +40,7 @@ public interface Reference$MyCoolConfig {
     default void reload(JavaPlugin plugin) throws IOException {
         reload(plugin, FILE_PATH);
     }
-
+    
     /**
      * Reload the config file. This method uses the plugin's data path
      * as the target directory and resolves that with the provided file path.

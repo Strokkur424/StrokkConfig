@@ -1,3 +1,7 @@
+plugins {
+    alias(libs.plugins.blossom)
+}
+
 dependencies {
     implementation(project(":strokk-config-annotations"))
 
@@ -11,4 +15,10 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+sourceSets.main {
+    blossom.javaSources {
+        property("version", project.version.toString())
+    }
 }

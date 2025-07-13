@@ -1,8 +1,9 @@
 package net.strokkur.config.internal.printer;
 
 import net.strokkur.config.internal.intermediate.ConfigField;
-import net.strokkur.config.internal.intermediate.FieldType;
+import net.strokkur.config.internal.intermediate.ConfigSection;
 
+import java.io.IOException;
 import java.util.Set;
 
 public interface InterfaceSourcePrinter extends SourcePrinter {
@@ -15,19 +16,16 @@ public interface InterfaceSourcePrinter extends SourcePrinter {
 
     Set<String> getAllImports();
 
-    void printPackage();
-    void printImports();
-    void printInterfaceJavaDoc();
-    void printInterfaceDeclaration();
+    void printPackage() throws IOException;
+    void printImports() throws IOException;
+    void printInterfaceJavaDoc() throws IOException;
+    void printInterfaceDeclaration() throws IOException;
 
-    void printFilePath();
-    void printReloading();
-    void printAccessMethods();
-    void printNestedClasses();
+    void printFilePath() throws IOException;
+    void printReloading() throws IOException;
+    void printAccessMethods() throws IOException;
+    void printNestedInterfaces() throws IOException;
 
-    void printNestedClassesAccessMethods();
-    void printNestedClassesDefinitions();
-
-    void printAccessMethod(ConfigField field);
-    void printNestedClass(FieldType type);
+    void printAccessMethod(ConfigField field) throws IOException;
+    void printSectionInterface(ConfigSection type) throws IOException;
 }

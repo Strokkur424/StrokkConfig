@@ -9,6 +9,7 @@ import net.strokkur.config.internal.intermediate.CustomType;
 
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.util.Elements;
 
 /**
  * A parser for converting annotated source classes into

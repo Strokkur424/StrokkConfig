@@ -1,12 +1,13 @@
 package net.strokkur.config.internal.printer;
 
+import org.intellij.lang.annotations.Language;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.Writer;
 
 @SuppressWarnings("UnusedReturnValue")
-abstract class AbstractPrinter implements SourcePrinter {
+public abstract class AbstractPrinter implements SourcePrinter {
 
     protected @Nullable Writer writer;
     protected String indentString;
@@ -48,6 +49,8 @@ abstract class AbstractPrinter implements SourcePrinter {
         this.indent--;
         this.indentString = INDENTATION.repeat(this.indent);
     }
+    
+    
 
     @Override
     public SourcePrinter print(String message, Object... format) throws IOException {
@@ -78,6 +81,20 @@ abstract class AbstractPrinter implements SourcePrinter {
         }
 
         writer.append("\n");
+        return this;
+    }
+
+    @Override
+    public SourcePrinter printBlock(String block, Object... format) throws IOException {
+        if (writer == null) {
+            throw new IOException("No writer set.");
+        }
+        
+        String parsedBlock = block.replace("{}", "%s").formatted(format);
+        for (@Language("JAVA") String line : parsedBlock.split("\n")) {
+            println(line);
+        }
+        
         return this;
     }
 }

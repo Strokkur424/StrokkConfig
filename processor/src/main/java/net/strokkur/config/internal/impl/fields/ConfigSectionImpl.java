@@ -3,10 +3,14 @@ package net.strokkur.config.internal.impl.fields;
 import net.strokkur.config.internal.intermediate.ConfigField;
 import net.strokkur.config.internal.intermediate.ConfigSection;
 
+import javax.lang.model.element.Element;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ConfigSectionImpl implements ConfigSection {
 
@@ -38,6 +42,19 @@ public class ConfigSectionImpl implements ConfigSection {
 
     @Override
     public String getClassString() {
-        return typeElement.toString();
+        return typeElement.getQualifiedName().toString();
+    }
+
+    @Override
+    public String getClassName() {
+        return parseClassName(typeElement);
+    }
+
+    @Override
+    public Set<String> getImports() {
+        Set<String> imports = new HashSet<>();
+        fields.forEach(field -> imports.addAll(field.getFieldType().getImports()));
+        imports.add(getClassString());
+        return imports;
     }
 }

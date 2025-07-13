@@ -7,32 +7,36 @@ import net.strokkur.config.annotations.CustomParse;
 import net.strokkur.config.annotations.CustomType;
 import net.strokkur.config.annotations.GenerateConfig;
 import net.strokkur.config.internal.exceptions.ProcessorException;
-import net.strokkur.config.internal.intermediate.ConfigField;
-import net.strokkur.config.internal.intermediate.ConfigFormat;
-import net.strokkur.config.internal.intermediate.ConfigMetadata;
-import net.strokkur.config.internal.intermediate.ConfigModel;
-import net.strokkur.config.internal.intermediate.ConfigSection;
 import net.strokkur.config.internal.impl.ConfigMetadataImpl;
 import net.strokkur.config.internal.impl.ConfigModelImpl;
 import net.strokkur.config.internal.impl.fields.ConfigFieldImpl;
 import net.strokkur.config.internal.impl.fields.ConfigSectionImpl;
 import net.strokkur.config.internal.impl.fields.CustomTypeImpl;
 import net.strokkur.config.internal.impl.fields.DefaultFieldTypeImpl;
+import net.strokkur.config.internal.intermediate.ConfigField;
+import net.strokkur.config.internal.intermediate.ConfigFormat;
+import net.strokkur.config.internal.intermediate.ConfigMetadata;
+import net.strokkur.config.internal.intermediate.ConfigModel;
+import net.strokkur.config.internal.intermediate.ConfigSection;
 import net.strokkur.config.internal.util.MessagerWrapper;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullUnmarked;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.util.Elements;
 
 public class AnnotationParserImpl implements AnnotationParser {
 
     private final MessagerWrapper messager;
+    private final Elements elementUtils;
 
-    public AnnotationParserImpl(MessagerWrapper messager) {
+    public AnnotationParserImpl(MessagerWrapper messager, Elements elementUtils) {
         this.messager = messager;
+        this.elementUtils = elementUtils;
     }
 
     @Override
@@ -79,7 +83,7 @@ public class AnnotationParserImpl implements AnnotationParser {
         }
 
         return new ConfigFieldImpl(
-            new DefaultFieldTypeImpl(variable.asType()),
+            new DefaultFieldTypeImpl(variable.asType(), elementUtils),
             variable.getSimpleName().toString(),
             customParseElement
         );
@@ -123,6 +127,7 @@ public class AnnotationParserImpl implements AnnotationParser {
     @NullUnmarked
     private @NonNull ConfigMetadata getMetadata(@NonNull TypeElement classElement) throws ProcessorException {
         GenerateConfig generateConfig = classElement.getAnnotation(GenerateConfig.class);
+        String packageName = ((PackageElement) classElement.getEnclosingElement()).getQualifiedName().toString();
 
         Format format = Format.HOCON;
         net.strokkur.config.annotations.ConfigFormat configFormatAnnotation = classElement.getAnnotation(net.strokkur.config.annotations.ConfigFormat.class);
@@ -139,6 +144,8 @@ public class AnnotationParserImpl implements AnnotationParser {
         boolean defaultNonNull = classElement.getAnnotation(ConfigNullable.class) == null;
 
         return new ConfigMetadataImpl(
+            classElement.getSimpleName().toString(),
+            packageName,
             generateConfig.value(),
             ConfigFormat.getFromEnum(format),
             path,

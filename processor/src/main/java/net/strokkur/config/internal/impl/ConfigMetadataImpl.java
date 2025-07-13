@@ -6,13 +6,17 @@ import org.jspecify.annotations.Nullable;
 
 public class ConfigMetadataImpl implements ConfigMetadata {
 
-    private final String className;
+    private final String originalClass;
+    private final String packageName;
+    private final String interfaceClassName;
     private final ConfigFormat configFormat;
     private final @Nullable String filePath;
     private final boolean defaultNonNull;
 
-    public ConfigMetadataImpl(String className, ConfigFormat configFormat, @Nullable String filePath, boolean defaultNonNull) {
-        this.className = className;
+    public ConfigMetadataImpl(String originalClass, String packageName, String interfaceClassName, ConfigFormat configFormat, @Nullable String filePath, boolean defaultNonNull) {
+        this.originalClass = originalClass;
+        this.packageName = packageName;
+        this.interfaceClassName = interfaceClassName;
         this.configFormat = configFormat;
         this.filePath = filePath;
         this.defaultNonNull = defaultNonNull;
@@ -24,8 +28,23 @@ public class ConfigMetadataImpl implements ConfigMetadata {
     }
 
     @Override
-    public String getClassName() {
-        return className;
+    public String getPackage() {
+        return packageName;
+    }
+
+    @Override
+    public String getOriginalClass() {
+        return originalClass;
+    }
+    
+    @Override
+    public String getInterfaceClass() {
+        return interfaceClassName;
+    }
+
+    @Override
+    public String getImplementationClass() {
+        return interfaceClassName + "Impl";
     }
 
     @Override

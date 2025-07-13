@@ -2,9 +2,11 @@ package net.strokkur.config.internal;
 
 import net.strokkur.config.annotations.GenerateConfig;
 import net.strokkur.config.internal.exceptions.ProcessorException;
+import net.strokkur.config.internal.impl.printer.InterfaceSourcePrinterImpl;
 import net.strokkur.config.internal.intermediate.ConfigModel;
 import net.strokkur.config.internal.parsing.AnnotationParser;
 import net.strokkur.config.internal.parsing.AnnotationParserImpl;
+import net.strokkur.config.internal.printer.JavaFilePrinter;
 import net.strokkur.config.internal.util.MessagerWrapper;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -12,6 +14,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,8 +33,10 @@ public class StrokkConfigProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        Elements elementUtils = super.processingEnv.getElementUtils();
+        
         MessagerWrapper messagerWrapper = MessagerWrapper.wrap(super.processingEnv.getMessager());
-        AnnotationParser parser = new AnnotationParserImpl(messagerWrapper);
+        AnnotationParser parser = new AnnotationParserImpl(messagerWrapper, elementUtils);
 
         Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(GenerateConfig.class);
         List<ConfigModel> parsedList = new ArrayList<>(annotated.size());
@@ -48,16 +53,13 @@ public class StrokkConfigProcessor extends AbstractProcessor {
             }
         }
 
-//        for (ConfigModel model : parsedList) {
-//            try {
-//                model.getMetadata().getFormat().getSourcesPrinter().print();
-//            } catch (IOException e) {
-//                messagerWrapper.error("An internal exception occurred trying to print class file for {}: {}",
-//                    model.getMetadata().getFilePath(),
-//                    e.getMessage()
-//                );
-//            }
-//        }
+        for (ConfigModel model : parsedList) {
+            JavaFilePrinter interfacePrinter = new JavaFilePrinter(
+                model, w -> new InterfaceSourcePrinterImpl(w, model), model.getMetadata().getInterfaceClass(), super.processingEnv.getFiler(), messagerWrapper
+            );
+
+            interfacePrinter.print();
+        }
 
         return true;
     }
