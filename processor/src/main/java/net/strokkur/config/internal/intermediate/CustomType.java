@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Internal representation of classes annotated with {@link CustomType}.
  */
-public interface CustomType extends FieldType {
+public interface CustomType {
 
     boolean isDefaultNonNull();
 

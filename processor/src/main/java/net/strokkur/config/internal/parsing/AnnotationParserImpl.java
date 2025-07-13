@@ -12,12 +12,14 @@ import net.strokkur.config.internal.impl.ConfigModelImpl;
 import net.strokkur.config.internal.impl.fields.ConfigFieldImpl;
 import net.strokkur.config.internal.impl.fields.ConfigSectionImpl;
 import net.strokkur.config.internal.impl.fields.CustomTypeImpl;
-import net.strokkur.config.internal.impl.fields.DefaultFieldTypeImpl;
+import net.strokkur.config.internal.impl.fields.ObjectFieldTypeImpl;
+import net.strokkur.config.internal.impl.fields.PrimitiveFieldType;
 import net.strokkur.config.internal.intermediate.ConfigField;
 import net.strokkur.config.internal.intermediate.ConfigFormat;
 import net.strokkur.config.internal.intermediate.ConfigMetadata;
 import net.strokkur.config.internal.intermediate.ConfigModel;
 import net.strokkur.config.internal.intermediate.ConfigSection;
+import net.strokkur.config.internal.intermediate.FieldType;
 import net.strokkur.config.internal.util.MessagerWrapper;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullUnmarked;
@@ -27,16 +29,20 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 
 public class AnnotationParserImpl implements AnnotationParser {
 
     private final MessagerWrapper messager;
     private final Elements elementUtils;
+    private final Types typesUtil;
 
-    public AnnotationParserImpl(MessagerWrapper messager, Elements elementUtils) {
+    public AnnotationParserImpl(MessagerWrapper messager, Elements elementUtils, Types typesUtil) {
         this.messager = messager;
         this.elementUtils = elementUtils;
+        this.typesUtil = typesUtil;
     }
 
     @Override
@@ -82,8 +88,15 @@ public class AnnotationParserImpl implements AnnotationParser {
             }
         }
 
+        FieldType type;
+        if (variable.asType().getKind().isPrimitive()) {
+            type = new PrimitiveFieldType(variable.asType().toString());
+        } else {
+            type = new ObjectFieldTypeImpl(messager, (DeclaredType) variable.asType(), typesUtil);
+        }
+
         return new ConfigFieldImpl(
-            new DefaultFieldTypeImpl(variable.asType(), elementUtils),
+            type,
             variable.getSimpleName().toString(),
             customParseElement
         );
@@ -92,7 +105,7 @@ public class AnnotationParserImpl implements AnnotationParser {
     @Override
     @NullUnmarked
     public net.strokkur.config.internal.intermediate.@NonNull CustomType parseCustomType(@NonNull TypeElement classElement) throws ProcessorException {
-        CustomTypeImpl impl = new CustomTypeImpl(classElement);
+        CustomTypeImpl impl = new CustomTypeImpl();
         impl.setDefaultNonNull(classElement.getAnnotation(ConfigNullable.class) != null);
 
         for (Element element : classElement.getEnclosedElements()) {
@@ -112,7 +125,7 @@ public class AnnotationParserImpl implements AnnotationParser {
     @Override
     @NullUnmarked
     public @NonNull ConfigSection parseConfigSection(@NonNull TypeElement classElement) throws ProcessorException {
-        ConfigSectionImpl impl = new ConfigSectionImpl(classElement);
+        ConfigSectionImpl impl = new ConfigSectionImpl();
         impl.setDefaultNonNull(classElement.getAnnotation(ConfigNullable.class) != null);
 
         for (Element element : classElement.getEnclosedElements()) {

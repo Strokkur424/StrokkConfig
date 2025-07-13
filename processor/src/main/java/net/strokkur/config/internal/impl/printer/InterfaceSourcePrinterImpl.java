@@ -2,7 +2,6 @@ package net.strokkur.config.internal.impl.printer;
 
 import net.strokkur.config.internal.BuildConstants;
 import net.strokkur.config.internal.impl.fields.ConfigFieldImpl;
-import net.strokkur.config.internal.impl.fields.SectionFieldFieldType;
 import net.strokkur.config.internal.intermediate.ConfigField;
 import net.strokkur.config.internal.intermediate.ConfigModel;
 import net.strokkur.config.internal.intermediate.ConfigSection;
@@ -55,11 +54,9 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
 
     @Override
     public Set<String> getAllImports() {
-        Set<String> imports = new HashSet<>();
-        imports.addAll(STANDARD_INTERFACE_IMPORTS);
+        Set<String> imports = new HashSet<>(STANDARD_INTERFACE_IMPORTS);
 
         model.getFields().forEach(field -> imports.addAll(field.getFieldType().getImports()));
-        model.getSections().forEach(section -> imports.addAll(section.getImports()));
         
         imports.removeIf(str -> str.startsWith(model.getMetadata().getPackage()));
         imports.removeIf(str -> str.startsWith("java.lang."));
@@ -180,20 +177,20 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
             //
             
             """);
-
-        for (ConfigSection section : model.getSections()) {
-            printAccessMethod(new ConfigFieldImpl(
-                new SectionFieldFieldType(section.getClassString()),
-                section.getClassString().toLowerCase()
-            ));
-            println();
-            printSectionInterface(section);
-        }
+//
+//        for (ConfigSection section : model.getSections()) {
+//            printAccessMethod(new ConfigFieldImpl(
+//                
+//                section.getFullyQualifiedName().toLowerCase()
+//            ));
+//            println();
+//            printSectionInterface(section);
+//        }
     }
 
     @Override
     public void printAccessMethod(ConfigField field) throws IOException {
-        String type = field.getFieldType().getClassName();
+        String type = field.getFieldType().getSimpleNameParameterized();
         String name = field.getFieldName();
 
         StringBuilder paramBuilder = new StringBuilder();

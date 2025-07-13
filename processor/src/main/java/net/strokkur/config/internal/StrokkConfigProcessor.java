@@ -15,6 +15,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -33,10 +34,11 @@ public class StrokkConfigProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        Elements elementUtils = super.processingEnv.getElementUtils();
+        Elements elementUtil = super.processingEnv.getElementUtils();
+        Types typesUtil = super.processingEnv.getTypeUtils();
         
         MessagerWrapper messagerWrapper = MessagerWrapper.wrap(super.processingEnv.getMessager());
-        AnnotationParser parser = new AnnotationParserImpl(messagerWrapper, elementUtils);
+        AnnotationParser parser = new AnnotationParserImpl(messagerWrapper, elementUtil, typesUtil);
 
         Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(GenerateConfig.class);
         List<ConfigModel> parsedList = new ArrayList<>(annotated.size());
