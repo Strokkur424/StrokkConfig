@@ -2,8 +2,11 @@ package net.strokkur.config.internal;
 
 import net.strokkur.config.internal.intermediate.ConfigField;
 import net.strokkur.config.internal.intermediate.ConfigType;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import javax.lang.model.element.ExecutableElement;
 
 public class FieldTests {
 
@@ -71,6 +74,11 @@ public class FieldTests {
         @Override
         public String getFieldName() {
             return fieldName;
+        }
+
+        @Override
+        public @Nullable ExecutableElement getCustomParseMethod() {
+            return null;
         }
     }
 }

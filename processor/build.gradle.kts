@@ -3,10 +3,10 @@ dependencies {
 
     compileOnly(libs.jspecify)
     compileOnly(libs.jetbrains.annotations)
-}
 
-dependencies {
     testImplementation(libs.juint.jupiter)
+    testCompileOnly(libs.jspecify)
+    testCompileOnly(libs.jetbrains.annotations)
 }
 
 tasks.test {
