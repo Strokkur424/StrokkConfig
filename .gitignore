@@ -8,3 +8,6 @@ build
 # Ignore IntelliJ files
 .idea
 *.iml
+
+# Ignore node_modules
+node_modules
