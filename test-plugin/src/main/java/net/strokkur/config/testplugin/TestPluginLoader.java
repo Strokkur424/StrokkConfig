@@ -32,6 +32,7 @@ public class TestPluginLoader implements PluginLoader {
         final MavenLibraryResolver resolver = new MavenLibraryResolver();
         resolver.addRepository(new RemoteRepository.Builder("central", "default", MavenLibraryResolver.MAVEN_CENTRAL_DEFAULT_MIRROR).build());
         resolver.addDependency(new Dependency(new DefaultArtifact("org.spongepowered:configurate-hocon:" + Versions.CONFIGURATE), null));
+        resolver.addDependency(new Dependency(new DefaultArtifact("org.spongepowered:configurate-yaml:" + Versions.CONFIGURATE), null));
         classpathBuilder.addLibrary(resolver);
     }
 }

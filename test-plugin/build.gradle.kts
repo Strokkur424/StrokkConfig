@@ -9,6 +9,7 @@ dependencies {
 
     compileOnly(libs.paper.api)
     compileOnly(libs.configurate.hocon)
+    compileOnly(libs.configurate.yaml)
 }
 
 tasks.runServer {
