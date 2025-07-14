@@ -1,10 +1,8 @@
 import com.diffplug.gradle.spotless.SpotlessPlugin
-import de.chojo.PublishData
 
 plugins {
     id("java-library")
     id("maven-publish")
-    alias(libs.plugins.publishdata)
     alias(libs.plugins.spotless)
 }
 
@@ -14,7 +12,6 @@ version = "1.0.1"
 allprojects {
     apply {
         plugin<SpotlessPlugin>()
-        plugin<PublishData>()
     }
 
     spotless {
@@ -22,11 +19,6 @@ allprojects {
             licenseHeaderFile(rootProject.file("HEADER"))
             target("**/*.java")
         }
-    }
-
-    publishData {
-        useEldoNexusRepos(true)
-        publishComponent("java")
     }
 }
 
@@ -53,7 +45,6 @@ subprojects {
 
     if (name.contains("processor") || name.contains("annotations")) {
         apply {
-            plugin<PublishData>()
             plugin<MavenPublishPlugin>()
         }
 
@@ -68,12 +59,16 @@ subprojects {
                     }
 
                     name = "EldoNexus"
-                    setUrl(publishData.getRepository())
+                    setUrl("https://eldonexus.de/repository/maven-releases/")
                 }
             }
 
             publications.create<MavenPublication>("maven") {
-                publishData.configurePublication(this)
+                groupId = project.group.toString()
+                artifactId = project.name
+                version = project.version.toString()
+                
+                from(components["java"])
             }
         }
     }
