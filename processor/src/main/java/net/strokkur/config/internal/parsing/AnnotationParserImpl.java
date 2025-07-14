@@ -111,23 +111,23 @@ public class AnnotationParserImpl implements AnnotationParser {
                     // This is the custom method
                     builder.setCustomParseMethod(methodElement);
                     builder.setFieldType(FieldType.ofTypeMirror(methodElement.getReturnType(), messager, typesUtil));
-                    
+
                     for (VariableElement parameter : methodElement.getParameters()) {
                         builder.addMethodParameter(parameter);
                     }
                     builder.setIsVarArgs(methodElement.isVarArgs());
-                    
+
                     return builder.build();
                 }
             }
         }
-        
+
         // Check if the class is an inner class of the config class --> section
         for (Element subElement : classElement.getEnclosedElements()) {
             if (!(subElement instanceof TypeElement innerClassElement)) {
                 continue;
             }
-            
+
             if (innerClassElement == element) {
                 // The declared type is a section; therefor we apply our own logic instead of just serializing
                 builder.setIsSectionAccessor(true);

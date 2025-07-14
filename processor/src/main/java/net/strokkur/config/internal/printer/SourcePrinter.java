@@ -37,6 +37,6 @@ public interface SourcePrinter {
     SourcePrinter print(@Language("JAVA") String message, Object... format) throws IOException;
     SourcePrinter println(@Language("JAVA") String message, Object... format) throws IOException;
     SourcePrinter println() throws IOException;
-    
+
     SourcePrinter printBlock(@Language("JAVA") String block, Object... format) throws IOException;
 }

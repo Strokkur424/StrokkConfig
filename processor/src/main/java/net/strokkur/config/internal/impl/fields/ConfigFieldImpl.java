@@ -48,6 +48,10 @@ public final class ConfigFieldImpl implements ConfigField {
         this.isVarArgs = isVarArgs;
     }
 
+    public static Builder builder(FieldType fieldType, String fieldName) {
+        return new BuilderImpl(fieldType, fieldName);
+    }
+
     @Override
     public List<VariableElement> getMethodParameters() {
         return Collections.unmodifiableList(methodParameters);
@@ -83,14 +87,10 @@ public final class ConfigFieldImpl implements ConfigField {
         return isVarArgs;
     }
 
-    public static Builder builder(FieldType fieldType, String fieldName) {
-        return new BuilderImpl(fieldType, fieldName);
-    }
-
     private static class BuilderImpl implements Builder {
+        private final List<VariableElement> methodParameters = new ArrayList<>();
         private FieldType fieldType;
         private String fieldName;
-        private final List<VariableElement> methodParameters = new ArrayList<>();
         private boolean nullable = false;
         private boolean isSectionAccessor = false;
         private @Nullable ExecutableElement customParseMethod = null;

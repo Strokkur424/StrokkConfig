@@ -51,20 +51,20 @@ class MyCoolConfigModel {
     public List<String> aliases = List.of("pt");
     public int amountOfExpPerStuff = 200;
     public ItemDefinition itemDefinition = new ItemDefinition("diamond_sword", "<red><b>Destroyer 9000");
-    
+
     public Messages messages = new Messages();
 
     @ConfigSerializable
     public static class Messages {
-        
+
         @CustomParse("parseToMiniMessage")
         public String runCommand;
-        
+
         public Component parseToMiniMessage(String message, MiniMessage mm, TagResolver... resolvers) {
             return mm.deserialize(message, resolvers);
         }
     }
-    
+
     @SuppressWarnings("UnstableApiUsage")
     @CustomType
     @ConfigSerializable

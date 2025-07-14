@@ -21,13 +21,11 @@ import net.strokkur.config.internal.BuildConstants;
 import net.strokkur.config.internal.intermediate.ConfigField;
 import net.strokkur.config.internal.intermediate.ConfigModel;
 import net.strokkur.config.internal.intermediate.ConfigSection;
-import net.strokkur.config.internal.intermediate.FieldType;
 import net.strokkur.config.internal.printer.AbstractPrinter;
 import net.strokkur.config.internal.printer.InterfaceSourcePrinter;
 import net.strokkur.config.internal.util.MessagerWrapper;
 import org.jspecify.annotations.Nullable;
 
-import javax.annotation.processing.Messager;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Types;
@@ -90,7 +88,7 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
             }
         });
         model.getSections().forEach(sec -> sec.getFields().forEach(field -> imports.addAll(field.getFieldType().getImports())));
-        
+
 
         imports.removeIf(str -> str.startsWith(model.getMetadata().getPackage()));
         imports.removeIf(str -> str.startsWith("java.lang."));
@@ -226,10 +224,10 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
         List<VariableElement> methodParameters = field.getMethodParameters();
         for (int i = 0; i < methodParameters.size(); i++) {
             VariableElement param = methodParameters.get(i);
-            
+
             if (i + 1 == methodParameters.size() && param.asType().getKind() == TypeKind.ARRAY) {
                 String typeName = param.asType().toString();
-                
+
                 paramBuilder.append(typeName, 0, typeName.length() - 2)
                     .append("...")
                     .append(" ")

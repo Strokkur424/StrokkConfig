@@ -7,7 +7,7 @@ pluginManagement {
 
 rootProject.name = "StrokkConfig"
 
-sequenceOf("annotations", "processor", "test-plugin").forEach { 
+sequenceOf("annotations", "processor", "test-plugin").forEach {
     include("strokk-config-$it")
     project(":strokk-config-$it").projectDir = rootDir.resolve(it)
 }

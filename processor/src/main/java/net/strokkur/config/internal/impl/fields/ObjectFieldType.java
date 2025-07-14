@@ -65,7 +65,7 @@ public class ObjectFieldType implements FieldType {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < parameters.size(); i++) {
             TypeMirror param = parameters.get(i);
-            
+
             Element paramElement = types.asElement(param);
             if (!(paramElement instanceof TypeElement declaredTypeElement)) {
                 messagerWrapper.warnElement("Parameter element {} is not a TypeElement", paramElement, param);
@@ -117,12 +117,12 @@ public class ObjectFieldType implements FieldType {
             getImportsRecursive(set, declaredTypeElement, declared);
         }
     }
-    
+
     private String getPackage(Element element) {
         do {
             element = element.getEnclosingElement();
         } while (!(element instanceof PackageElement pkgElement));
-        
+
         return pkgElement.getQualifiedName().toString();
     }
 }

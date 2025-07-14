@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 public @interface ConfigFormat {
 
     /**
-     * The language. Defaults to {@code Language.HOCON} if not set. 
+     * The language. Defaults to {@code Language.HOCON} if not set.
      */
     Format value() default Format.HOCON;
 }

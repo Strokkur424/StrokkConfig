@@ -66,8 +66,7 @@ public abstract class AbstractPrinter implements SourcePrinter {
         this.indent--;
         this.indentString = INDENTATION.repeat(this.indent);
     }
-    
-    
+
 
     @Override
     public SourcePrinter print(String message, Object... format) throws IOException {
@@ -106,12 +105,12 @@ public abstract class AbstractPrinter implements SourcePrinter {
         if (writer == null) {
             throw new IOException("No writer set.");
         }
-        
+
         String parsedBlock = block.replace("{}", "%s").formatted(format);
         for (@Language("JAVA") String line : parsedBlock.split("\n")) {
             println(line);
         }
-        
+
         return this;
     }
 }

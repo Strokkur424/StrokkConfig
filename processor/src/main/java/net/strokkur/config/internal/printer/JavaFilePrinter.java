@@ -27,7 +27,7 @@ import java.io.Writer;
 import java.util.function.Function;
 
 public class JavaFilePrinter {
-    
+
     private final ConfigModel model;
     private final Function<Writer, SourcePrinter> sourcePrinter;
     private final String sourceName;

@@ -31,17 +31,14 @@ import java.util.Set;
  */
 public interface FieldType {
 
-    String getFullyQualifiedName();
-
-    String getSimpleNameParameterized();
-
-    Set<String> getImports();
-
     static FieldType ofTypeMirror(TypeMirror typeMirror, MessagerWrapper messager, Types typesUtil) {
         if (typeMirror.getKind().isPrimitive()) {
             return new PrimitiveFieldType(typeMirror.toString());
         }
-        
+
         return new ObjectFieldType(messager, (DeclaredType) typeMirror, typesUtil);
     }
+    String getFullyQualifiedName();
+    String getSimpleNameParameterized();
+    Set<String> getImports();
 }

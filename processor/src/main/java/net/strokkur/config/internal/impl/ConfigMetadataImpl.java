@@ -53,7 +53,7 @@ public class ConfigMetadataImpl implements ConfigMetadata {
     public String getOriginalClass() {
         return originalClass;
     }
-    
+
     @Override
     public String getInterfaceClass() {
         return interfaceClassName;

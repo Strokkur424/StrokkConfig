@@ -53,7 +53,7 @@ public class StrokkConfigProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Elements elementUtil = super.processingEnv.getElementUtils();
         Types typesUtil = super.processingEnv.getTypeUtils();
-        
+
         MessagerWrapper messagerWrapper = MessagerWrapper.wrap(super.processingEnv.getMessager());
         AnnotationParser parser = new AnnotationParserImpl(messagerWrapper, elementUtil, typesUtil);
 

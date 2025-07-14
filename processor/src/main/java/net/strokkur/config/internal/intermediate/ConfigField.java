@@ -36,7 +36,7 @@ public interface ConfigField extends FieldNameContainer {
     boolean isNullable();
 
     boolean isSectionAccessor();
-    
+
     boolean isVarArgs();
 
     @Nullable

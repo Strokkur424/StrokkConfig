@@ -56,6 +56,25 @@ public class Reference$MyCoolConfigImpl implements Reference$MyCoolConfig {
     // Reloading
     //
 
+    private static <M> M validateLoaded(@Nullable M model) {
+        if (model == null) {
+            throw new IllegalStateException("The config file '" + FILE_PATH + "' is not fully loaded.");
+        }
+        return model;
+    }
+
+    //
+    // Access methods
+    //
+
+    private static <M, T> T getNonNull(M model, Function<M, T> function, String name) {
+        T result = function.apply(model);
+        if (result == null) {
+            throw new IllegalStateException("The value for '" + name + "' in the config file '" + FILE_PATH + "' is not declared.");
+        }
+        return result;
+    }
+
     @Override
     public void reload(JavaPlugin plugin, String filePath) throws IOException {
         final Path path = plugin.getDataPath().resolve(filePath);
@@ -93,10 +112,6 @@ public class Reference$MyCoolConfigImpl implements Reference$MyCoolConfig {
         messagesModel = new MessagesImpl(model.messages);
     }
 
-    //
-    // Access methods
-    //
-
     @Override
     public String name() {
         return getNonNull(validateLoaded(this.model), m -> m.name, "name");
@@ -107,6 +122,10 @@ public class Reference$MyCoolConfigImpl implements Reference$MyCoolConfig {
         return getNonNull(validateLoaded(this.model), m -> Collections.unmodifiableList(m.aliases), "aliases");
     }
 
+    //
+    // Utility methods
+    //
+
     @Override
     public int numberOfExpPerStuff() {
         return validateLoaded(this.model).amountOfExpPerStuff;
@@ -115,25 +134,6 @@ public class Reference$MyCoolConfigImpl implements Reference$MyCoolConfig {
     @Override
     public ItemStack itemDefinition(TagResolver... resolvers) {
         return getNonNull(validateLoaded(this.model), m -> m.itemDefinition.construct(resolvers), "item-definition");
-    }
-
-    //
-    // Utility methods
-    //
-
-    private static <M> M validateLoaded(@Nullable M model) {
-        if (model == null) {
-            throw new IllegalStateException("The config file '" + FILE_PATH + "' is not fully loaded.");
-        }
-        return model;
-    }
-
-    private static <M, T> T getNonNull(M model, Function<M, T> function, String name) {
-        T result = function.apply(model);
-        if (result == null) {
-            throw new IllegalStateException("The value for '" + name + "' in the config file '" + FILE_PATH + "' is not declared.");
-        }
-        return result;
     }
 
     //

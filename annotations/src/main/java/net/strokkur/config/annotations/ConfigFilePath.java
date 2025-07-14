@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
 public @interface ConfigFilePath {
-    
+
     /**
      * The path to the config file.
      */

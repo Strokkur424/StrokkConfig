@@ -31,7 +31,7 @@ public class TestPlugin extends JavaPlugin {
     public void reload() throws IOException {
         Reference$MyCoolConfig config = new Reference$MyCoolConfigImpl();
         config.reload(this);
-        
+
         ItemStack stack = config.itemDefinition();
     }
 }
