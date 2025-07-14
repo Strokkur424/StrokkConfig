@@ -19,7 +19,8 @@ package net.strokkur.config.internal.intermediate;
 
 import net.strokkur.config.Format;
 import net.strokkur.config.internal.exceptions.ProcessorException;
-import net.strokkur.config.internal.impl.printer.ImplementationHoconSourcePrinter;
+import net.strokkur.config.internal.impl.printer.SourcePrinterGson;
+import net.strokkur.config.internal.impl.printer.SourcePrinterHocon;
 import net.strokkur.config.internal.printer.SourcePrinter;
 import net.strokkur.config.internal.util.MessagerWrapper;
 
@@ -30,6 +31,7 @@ public interface ConfigFormat {
     static ConfigFormat getFromEnum(Format format) throws ProcessorException {
         return switch (format) {
             case HOCON -> new HoconFormat();
+            case JSON -> new GsonFormat();
             default -> throw new ProcessorException("Failed to find implementation for format '" + format + '.');
         };
     }
@@ -38,14 +40,28 @@ public interface ConfigFormat {
     String defaultExtension();
 
     class HoconFormat implements ConfigFormat {
+        
         @Override
         public SourcePrinter getSourcesPrinter(Writer writer, ConfigModel configModel, MessagerWrapper messager) {
-            return new ImplementationHoconSourcePrinter(writer, configModel, messager);
+            return new SourcePrinterHocon(writer, configModel, messager);
         }
 
         @Override
         public String defaultExtension() {
-            return "conf";
+            return ".conf";
+        }
+    }
+    
+    class GsonFormat implements ConfigFormat {
+        
+        @Override
+        public SourcePrinter getSourcesPrinter(Writer writer, ConfigModel configModel, MessagerWrapper messager) {
+            return new SourcePrinterGson(writer, configModel, messager);
+        }
+
+        @Override
+        public String defaultExtension() {
+            return ".json";
         }
     }
 }

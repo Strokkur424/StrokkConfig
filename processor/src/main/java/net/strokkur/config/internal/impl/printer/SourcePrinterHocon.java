@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Set;
 
-public class ImplementationHoconSourcePrinter extends AbstractImplementationSourcePrinter {
+public class SourcePrinterHocon extends AbstractImplementationSourcePrinter {
 
-    public ImplementationHoconSourcePrinter(@Nullable Writer writer, ConfigModel model, MessagerWrapper messager) {
+    public SourcePrinterHocon(@Nullable Writer writer, ConfigModel model, MessagerWrapper messager) {
         super(writer, model, messager);
     }
 

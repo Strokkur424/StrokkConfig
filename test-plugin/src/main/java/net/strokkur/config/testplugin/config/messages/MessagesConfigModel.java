@@ -20,15 +20,16 @@ package net.strokkur.config.testplugin.config.messages;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.strokkur.config.annotations.ConfigFilePath;
+import net.strokkur.config.Format;
+import net.strokkur.config.annotations.ConfigFormat;
 import net.strokkur.config.annotations.CustomParse;
 import net.strokkur.config.annotations.GenerateConfig;
 import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @GenerateConfig("MessagesConfig")
-@ConfigFilePath("messages.conf")
 @ConfigSerializable
+@ConfigFormat(Format.JSON)
 @NullMarked
 public class MessagesConfigModel {
 
