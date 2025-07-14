@@ -29,7 +29,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @GenerateConfig("MessagesConfig")
 @ConfigSerializable
-@ConfigFormat(Format.YAML_CONFIGURATE)
+@ConfigFormat(Format.JSON_GSON)
 @NullMarked
 public class MessagesConfigModel {
 

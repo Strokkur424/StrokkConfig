@@ -32,7 +32,7 @@ public interface ConfigFormat {
     static ConfigFormat getFromEnum(Format format) throws ProcessorException {
         return switch (format) {
             case HOCON -> new HoconFormat();
-            case JSON -> new GsonFormat();
+            case JSON_GSON -> new GsonFormat();
             case YAML_CONFIGURATE -> new YamlConfigurateFormat();
             default -> throw new ProcessorException("Failed to find implementation for format '" + format + '.');
         };

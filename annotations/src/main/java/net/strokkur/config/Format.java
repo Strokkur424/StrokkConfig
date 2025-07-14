@@ -41,7 +41,7 @@ public enum Format {
      * <p>
      * This format uses the <a href="https://github.com/google/gson">gson</a> library.
      */
-    JSON,
+    JSON_GSON,
 
     /**
      * Human-Optimized Config Object Notation.
