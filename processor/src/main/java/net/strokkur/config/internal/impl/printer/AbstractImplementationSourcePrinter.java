@@ -160,7 +160,7 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
             public void reload(JavaPlugin plugin, String filePath) throws IOException {
                 final Path path = plugin.getDataPath().resolve(filePath);
             
-                if (!Files.exists(path)) {
+                if (!Files.exists(path) && plugin.getResource(filePath) != null) {
                     plugin.saveResource(filePath, false);
                 }""");
         println();
