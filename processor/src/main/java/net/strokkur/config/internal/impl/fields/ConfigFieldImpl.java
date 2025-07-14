@@ -18,6 +18,7 @@
 package net.strokkur.config.internal.impl.fields;
 
 import net.strokkur.config.internal.intermediate.ConfigField;
+import net.strokkur.config.internal.intermediate.CustomParseMethodType;
 import net.strokkur.config.internal.intermediate.FieldType;
 import net.strokkur.config.internal.intermediate.Parameter;
 import org.jspecify.annotations.Nullable;
@@ -36,9 +37,10 @@ public final class ConfigFieldImpl implements ConfigField {
     private final List<Parameter> methodParameters;
     private final boolean isSectionAccessor;
     private final boolean isVarArgs;
+    private final CustomParseMethodType customParseMethodType;
 
     public ConfigFieldImpl(FieldType fieldType, String fieldName, @Nullable ExecutableElement customParseMethod, boolean isNullable,
-                           List<Parameter> methodParameters, boolean isSectionAccessor, boolean isVarArgs) {
+                           List<Parameter> methodParameters, boolean isSectionAccessor, boolean isVarArgs, CustomParseMethodType customParseMethodType) {
         this.fieldType = fieldType;
         this.fieldName = fieldName;
         this.customParseMethod = customParseMethod;
@@ -46,6 +48,7 @@ public final class ConfigFieldImpl implements ConfigField {
         this.methodParameters = methodParameters;
         this.isSectionAccessor = isSectionAccessor;
         this.isVarArgs = isVarArgs;
+        this.customParseMethodType = customParseMethodType;
     }
 
     public static Builder builder(FieldType fieldType, String fieldName) {
@@ -73,6 +76,11 @@ public final class ConfigFieldImpl implements ConfigField {
     }
 
     @Override
+    public CustomParseMethodType getCustomParseMethodType() {
+        return customParseMethodType;
+    }
+
+    @Override
     public boolean isNullable() {
         return isNullable;
     }
@@ -95,6 +103,7 @@ public final class ConfigFieldImpl implements ConfigField {
         private boolean isSectionAccessor = false;
         private @Nullable ExecutableElement customParseMethod = null;
         private boolean isVarArgs = false;
+        private CustomParseMethodType customParseMethodType = CustomParseMethodType.NONE;
 
         public BuilderImpl(FieldType fieldType, String fieldName) {
             this.fieldType = fieldType;
@@ -142,11 +151,17 @@ public final class ConfigFieldImpl implements ConfigField {
             this.isVarArgs = value;
             return this;
         }
+        
+        @Override
+        public Builder setCustomParseMethodType(CustomParseMethodType customParseMethodType) {
+            this.customParseMethodType = customParseMethodType;
+            return this;
+        }
 
         @Override
         public ConfigField build() {
             return new ConfigFieldImpl(
-                fieldType, fieldName, customParseMethod, nullable, methodParameters, isSectionAccessor, isVarArgs
+                fieldType, fieldName, customParseMethod, nullable, methodParameters, isSectionAccessor, isVarArgs, customParseMethodType
             );
         }
     }

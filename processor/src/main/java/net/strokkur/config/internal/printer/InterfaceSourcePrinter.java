@@ -23,7 +23,7 @@ import net.strokkur.config.internal.intermediate.ConfigSection;
 import java.io.IOException;
 import java.util.Set;
 
-public interface InterfaceSourcePrinter extends SourcePrinter {
+public interface InterfaceSourcePrinter extends SharedSourcePrinter {
 
     Set<String> STANDARD_INTERFACE_IMPORTS = Set.of(
         "org.bukkit.plugin.java.JavaPlugin",
@@ -31,12 +31,13 @@ public interface InterfaceSourcePrinter extends SourcePrinter {
         "java.io.IOException"
     );
 
-    Set<String> getAllImports();
+    @Override
+    default Set<String> getStandardImports() {
+        return STANDARD_INTERFACE_IMPORTS;
+    }
 
-    void printPackage() throws IOException;
-    void printImports() throws IOException;
-    void printInterfaceJavaDoc() throws IOException;
-    void printInterfaceDeclaration() throws IOException;
+    void printClassJavaDoc() throws IOException;
+    void printClassDeclaration() throws IOException;
 
     void printFilePath() throws IOException;
     void printReloading() throws IOException;

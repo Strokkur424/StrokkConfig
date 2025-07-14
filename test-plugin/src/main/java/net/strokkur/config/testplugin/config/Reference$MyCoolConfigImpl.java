@@ -31,7 +31,6 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -53,7 +52,7 @@ public class Reference$MyCoolConfigImpl implements Reference$MyCoolConfig {
     private Messages messagesModel = null;
 
     //
-    // Reloading
+    // Validation utility
     //
 
     private static <M> M validateLoaded(@Nullable M model) {
@@ -63,10 +62,6 @@ public class Reference$MyCoolConfigImpl implements Reference$MyCoolConfig {
         return model;
     }
 
-    //
-    // Access methods
-    //
-
     private static <M, T> T getNonNull(M model, Function<M, T> function, String name) {
         T result = function.apply(model);
         if (result == null) {
@@ -74,6 +69,10 @@ public class Reference$MyCoolConfigImpl implements Reference$MyCoolConfig {
         }
         return result;
     }
+
+    //
+    // Reloading
+    //
 
     @Override
     public void reload(JavaPlugin plugin, String filePath) throws IOException {
@@ -112,6 +111,10 @@ public class Reference$MyCoolConfigImpl implements Reference$MyCoolConfig {
         messagesModel = new MessagesImpl(model.messages);
     }
 
+    //
+    // Access methods
+    //
+
     @Override
     public String name() {
         return getNonNull(validateLoaded(this.model), m -> m.name, "name");
@@ -119,12 +122,8 @@ public class Reference$MyCoolConfigImpl implements Reference$MyCoolConfig {
 
     @Override
     public List<String> aliases() {
-        return getNonNull(validateLoaded(this.model), m -> Collections.unmodifiableList(m.aliases), "aliases");
+        return getNonNull(validateLoaded(this.model), m -> m.aliases, "aliases");
     }
-
-    //
-    // Utility methods
-    //
 
     @Override
     public int numberOfExpPerStuff() {

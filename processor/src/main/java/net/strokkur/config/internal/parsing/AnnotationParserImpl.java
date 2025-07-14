@@ -36,6 +36,7 @@ import net.strokkur.config.internal.intermediate.ConfigFormat;
 import net.strokkur.config.internal.intermediate.ConfigMetadata;
 import net.strokkur.config.internal.intermediate.ConfigModel;
 import net.strokkur.config.internal.intermediate.ConfigSection;
+import net.strokkur.config.internal.intermediate.CustomParseMethodType;
 import net.strokkur.config.internal.intermediate.FieldType;
 import net.strokkur.config.internal.util.MessagerWrapper;
 import org.jspecify.annotations.NonNull;
@@ -104,7 +105,7 @@ public class AnnotationParserImpl implements AnnotationParser {
                 }
 
                 if (methodElement.getSimpleName().contentEquals(customParse.value())) {
-                    return populateCustomParseMethod(builder, methodElement, 1);
+                    return populateCustomParseMethod(builder, methodElement, 1, CustomParseMethodType.CUSTOM_PARSE);
                 }
             }
         }
@@ -125,7 +126,7 @@ public class AnnotationParserImpl implements AnnotationParser {
 
                 if (methodElement.getAnnotation(CustomTypeReturn.class) != null) {
                     // This is the custom method
-                    return populateCustomParseMethod(builder, methodElement, 0);
+                    return populateCustomParseMethod(builder, methodElement, 0, CustomParseMethodType.CUSTOM_TYPE);
                 }
             }
         }
@@ -147,7 +148,7 @@ public class AnnotationParserImpl implements AnnotationParser {
     }
 
     @NonNull
-    private ConfigField populateCustomParseMethod(ConfigField.Builder builder, ExecutableElement methodElement, int firstParam) {
+    private ConfigField populateCustomParseMethod(ConfigField.Builder builder, ExecutableElement methodElement, int firstParam, CustomParseMethodType type) {
         builder.setCustomParseMethod(methodElement);
         builder.setFieldType(FieldType.ofTypeMirror(methodElement.getReturnType(), messager, typesUtil));
 
@@ -160,6 +161,7 @@ public class AnnotationParserImpl implements AnnotationParser {
             ));
         }
         
+        builder.setCustomParseMethodType(type);
         builder.setIsVarArgs(methodElement.isVarArgs());
         return builder.build();
     }

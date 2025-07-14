@@ -17,37 +17,23 @@
  */
 package net.strokkur.config.internal.impl.printer;
 
-import net.strokkur.config.internal.BuildConstants;
 import net.strokkur.config.internal.impl.fields.ArrayFieldType;
 import net.strokkur.config.internal.intermediate.ConfigField;
 import net.strokkur.config.internal.intermediate.ConfigModel;
 import net.strokkur.config.internal.intermediate.ConfigSection;
 import net.strokkur.config.internal.intermediate.Parameter;
-import net.strokkur.config.internal.printer.AbstractPrinter;
 import net.strokkur.config.internal.printer.InterfaceSourcePrinter;
 import net.strokkur.config.internal.util.MessagerWrapper;
 import org.jspecify.annotations.Nullable;
 
-import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-public class InterfaceSourcePrinterImpl extends AbstractPrinter implements InterfaceSourcePrinter {
+public class InterfaceSourcePrinterImpl extends AbstractSharedSourcePrinter implements InterfaceSourcePrinter {
 
-    private final ConfigModel model;
-    private final MessagerWrapper messager;
-    private final Types types;
-
-    public InterfaceSourcePrinterImpl(@Nullable Writer writer, ConfigModel model, MessagerWrapper messager, Types types) {
-        super(writer);
-        this.model = model;
-        this.messager = messager;
-        this.types = types;
+    public InterfaceSourcePrinterImpl(@Nullable Writer writer, ConfigModel model, MessagerWrapper messager) {
+        super(writer, model, messager);
     }
 
     @Override
@@ -57,8 +43,8 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
         printImports();
         println();
 
-        printInterfaceJavaDoc();
-        printInterfaceDeclaration();
+        printClassJavaDoc();
+        printClassDeclaration();
         println();
 
         incrementIndent();
@@ -77,79 +63,23 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
     }
 
     @Override
-    public Set<String> getAllImports() {
-        Set<String> imports = new HashSet<>(STANDARD_INTERFACE_IMPORTS);
-
-        model.getFields().forEach(field -> {
-            imports.addAll(field.getFieldType().getImports());
-            for (Parameter methodParam : field.getMethodParameters()) {
-                imports.addAll(methodParam.getFieldType().getImports());
-            }
-        });
-        model.getSections().forEach(sec -> sec.getFields().forEach(
-            field -> {
-                imports.addAll(field.getFieldType().getImports());
-                for (Parameter methodParam : field.getMethodParameters()) {
-                    imports.addAll(methodParam.getFieldType().getImports());
-                }
-            }
-        ));
-
-        imports.removeIf(str -> str.startsWith(model.getMetadata().getPackage()));
-        imports.removeIf(str -> str.startsWith("java.lang."));
-        return imports;
+    protected String getJavaDocInfo() {
+        return "A config access interface generated from {@link {}}.";
     }
 
     @Override
-    public void printPackage() throws IOException {
-        println("package {};", model.getMetadata().getPackage());
+    protected String className() {
+        return model.getMetadata().getInterfaceClass();
     }
 
     @Override
-    public void printImports() throws IOException {
-        Map<Boolean, List<String>> splitImports = getAllImports().stream()
-            .sorted()
-            .collect(Collectors.partitioningBy(str -> str.startsWith("java")));
-
-        List<String> javaImports = splitImports.get(true);
-        List<String> otherImports = splitImports.get(false);
-
-        for (String i : otherImports) {
-            println("import {};", i);
-        }
-
-        println();
-
-        for (String i : javaImports) {
-            println("import {};", i);
-        }
+    protected String seeOther() {
+        return model.getMetadata().getImplementationClass();
     }
 
     @Override
-    public void printInterfaceJavaDoc() throws IOException {
-        printBlock("""
-                /**
-                 * A config access interface generated from {@link {}}.
-                 *
-                 * @author Strokkur24 - StrokkConfig
-                 * @version {}
-                 * @see {}
-                 * @see {}
-                 */""",
-            model.getMetadata().getOriginalClass(),
-            BuildConstants.VERSION,
-            model.getMetadata().getOriginalClass(),
-            model.getMetadata().getImplementationClass()
-        );
-    }
-
-    @Override
-    public void printInterfaceDeclaration() throws IOException {
-        printBlock("""
-                @NullMarked
-                public interface {} {""",
-            model.getMetadata().getInterfaceClass()
-        );
+    protected String classType() {
+        return "interface";
     }
 
     @Override

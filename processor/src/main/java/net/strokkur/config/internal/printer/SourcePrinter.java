@@ -38,4 +38,7 @@ public interface SourcePrinter {
     SourcePrinter println() throws IOException;
 
     SourcePrinter printBlock(@Language("JAVA") String block, Object... format) throws IOException;
+    default SourcePrinter printBlockNoJava(String block, Object... format) throws IOException {
+        return printBlock(block, format);
+    }
 }

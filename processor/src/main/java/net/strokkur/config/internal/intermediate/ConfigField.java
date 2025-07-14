@@ -40,6 +40,8 @@ public interface ConfigField extends FieldNameContainer {
 
     @Nullable
     ExecutableElement getCustomParseMethod();
+    
+    CustomParseMethodType getCustomParseMethodType();
 
     interface Builder {
         Builder setFieldType(FieldType fieldType);
@@ -49,6 +51,7 @@ public interface ConfigField extends FieldNameContainer {
         Builder setCustomParseMethod(ExecutableElement customParseMethod);
         Builder setIsSectionAccessor(boolean value);
         Builder setIsVarArgs(boolean value);
+        Builder setCustomParseMethodType(CustomParseMethodType customParseMethodType);
 
         ConfigField build();
     }

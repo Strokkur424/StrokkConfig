@@ -17,9 +17,10 @@
  */
 package net.strokkur.config.internal.printer;
 
+import java.io.IOException;
 import java.util.Set;
 
-public interface ImplementationSourcePrinter extends SourcePrinter {
+public interface ImplementationSourcePrinter extends SharedSourcePrinter {
 
     Set<String> STANDARD_IMPL_IMPORTS = Set.of(
         "org.bukkit.plugin.java.JavaPlugin",
@@ -33,19 +34,17 @@ public interface ImplementationSourcePrinter extends SourcePrinter {
         "java.util.function.Function"
     );
 
-    Set<String> getAllImports();
+    @Override
+    default Set<String> getStandardImports() {
+        return STANDARD_IMPL_IMPORTS;
+    }
+    
+    void printModelVariable() throws IOException;
+    void printNestedSectionsVariables() throws IOException;
 
-    void printPackage();
-    void printImports();
-    void printClassJavaDoc();
-    void printClassDeclaration();
+    void printReloadMethodImplementation() throws IOException;
 
-    void printModelVariable();
-    void printNestedSectionsVariables();
-
-    void printReloadMethodImplementation();
-
-    void printAccessMethods();
-    void printUtilityMethods();
-    void printNestedClasses();
+    void printAccessMethods() throws IOException;
+    void printUtilityMethods() throws IOException;
+    void printNestedClasses() throws IOException;
 }

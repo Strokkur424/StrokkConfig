@@ -19,15 +19,33 @@ package net.strokkur.config.internal.intermediate;
 
 import net.strokkur.config.Format;
 import net.strokkur.config.internal.exceptions.ProcessorException;
+import net.strokkur.config.internal.impl.printer.ImplementationHoconSourcePrinter;
 import net.strokkur.config.internal.printer.SourcePrinter;
+import net.strokkur.config.internal.util.MessagerWrapper;
+
+import java.io.Writer;
 
 public interface ConfigFormat {
+    
     static ConfigFormat getFromEnum(Format format) throws ProcessorException {
         return switch (format) {
-            case HOCON -> null;
+            case HOCON -> new HoconFormat();
             default -> throw new ProcessorException("Failed to find implementation for format '" + format + '.');
         };
     }
-    SourcePrinter getSourcesPrinter();
+    
+    SourcePrinter getSourcesPrinter(Writer writer, ConfigModel configModel, MessagerWrapper messager);
     String defaultExtension();
+    
+    class HoconFormat implements ConfigFormat {
+        @Override
+        public SourcePrinter getSourcesPrinter(Writer writer, ConfigModel configModel, MessagerWrapper messager) {
+            return new ImplementationHoconSourcePrinter(writer, configModel, messager);
+        }
+
+        @Override
+        public String defaultExtension() {
+            return "conf";
+        }
+    }
 }
