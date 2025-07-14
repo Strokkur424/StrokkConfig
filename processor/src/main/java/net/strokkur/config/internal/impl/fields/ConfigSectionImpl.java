@@ -9,11 +9,22 @@ import java.util.List;
 
 public class ConfigSectionImpl implements ConfigSection {
 
+    private final String sectionName;
     private final List<ConfigField> fields = new ArrayList<>();
     private boolean nonNull = true;
 
-    public void addConfigField(ConfigField field) {
+    public ConfigSectionImpl(String sectionName) {
+        this.sectionName = sectionName;
+    }
+
+    @Override
+    public void addField(ConfigField field) {
         fields.add(field);
+    }
+
+    @Override
+    public String getSectionName() {
+        return sectionName;
     }
 
     @Override

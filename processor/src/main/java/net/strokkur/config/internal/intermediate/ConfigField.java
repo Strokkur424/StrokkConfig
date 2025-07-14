@@ -1,55 +1,39 @@
 package net.strokkur.config.internal.intermediate;
 
+import net.strokkur.config.internal.util.FieldNameContainer;
 import org.jspecify.annotations.Nullable;
 
 import javax.lang.model.element.ExecutableElement;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import javax.lang.model.element.VariableElement;
+import java.util.List;
 
 /**
  * Internal representation of a configuration field.
  */
-public interface ConfigField {
-
-    Pattern NAME_CONVERSION_PATTERN = Pattern.compile("[A-Z][^A-Z]+");
+public interface ConfigField extends FieldNameContainer {
 
     FieldType getFieldType();
 
-    String getFieldName();
+    List<VariableElement> getMethodParameters();
+
+    boolean isNullable();
+
+    boolean isSectionAccessor();
+    
+    boolean isVarArgs();
 
     @Nullable
     ExecutableElement getCustomParseMethod();
 
-    default String getFieldNameDashed() {
-        String string = getFieldName();
+    interface Builder {
+        Builder setFieldType(FieldType fieldType);
+        Builder setFieldName(String fieldName);
+        Builder addMethodParameter(VariableElement type);
+        Builder setNullable(boolean value);
+        Builder setCustomParseMethod(ExecutableElement customParseMethod);
+        Builder setIsSectionAccessor(boolean value);
+        Builder setIsVarArgs(boolean value);
 
-        Matcher matcher = NAME_CONVERSION_PATTERN.matcher(string);
-
-        final StringBuilder builder = new StringBuilder();
-        while (matcher.find()) {
-            int startIndex = matcher.start();
-            int splitIndex;
-            if (startIndex == 0) {
-                splitIndex = matcher.end();
-            } else {
-                splitIndex = startIndex;
-            }
-
-            if (!builder.toString().isEmpty()) {
-                builder.append("-");
-            }
-
-            builder.append(string.substring(0, splitIndex).toLowerCase().replaceAll("_", "-"));
-            string = string.substring(splitIndex);
-            matcher = NAME_CONVERSION_PATTERN.matcher(string);
-        }
-
-        String out = builder.toString();
-        if (out.isBlank()) {
-            // Nothing matched
-            return getFieldName().replaceAll("_", "-");
-        }
-
-        return builder.toString();
+        ConfigField build();
     }
 }

@@ -1,15 +1,19 @@
 package net.strokkur.config.internal.impl.printer;
 
 import net.strokkur.config.internal.BuildConstants;
-import net.strokkur.config.internal.impl.fields.ConfigFieldImpl;
 import net.strokkur.config.internal.intermediate.ConfigField;
 import net.strokkur.config.internal.intermediate.ConfigModel;
 import net.strokkur.config.internal.intermediate.ConfigSection;
+import net.strokkur.config.internal.intermediate.FieldType;
 import net.strokkur.config.internal.printer.AbstractPrinter;
 import net.strokkur.config.internal.printer.InterfaceSourcePrinter;
+import net.strokkur.config.internal.util.MessagerWrapper;
 import org.jspecify.annotations.Nullable;
 
+import javax.annotation.processing.Messager;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashSet;
@@ -21,10 +25,14 @@ import java.util.stream.Collectors;
 public class InterfaceSourcePrinterImpl extends AbstractPrinter implements InterfaceSourcePrinter {
 
     private final ConfigModel model;
+    private final MessagerWrapper messager;
+    private final Types types;
 
-    public InterfaceSourcePrinterImpl(@Nullable Writer writer, ConfigModel model) {
+    public InterfaceSourcePrinterImpl(@Nullable Writer writer, ConfigModel model, MessagerWrapper messager, Types types) {
         super(writer);
         this.model = model;
+        this.messager = messager;
+        this.types = types;
     }
 
     @Override
@@ -33,7 +41,7 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
         println();
         printImports();
         println();
-        
+
         printInterfaceJavaDoc();
         printInterfaceDeclaration();
         println();
@@ -47,6 +55,8 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
         println();
 
         printAccessMethods();
+        println();
+        printNestedInterfaces();
 
         decrementIndent();
         println("}");
@@ -56,8 +66,15 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
     public Set<String> getAllImports() {
         Set<String> imports = new HashSet<>(STANDARD_INTERFACE_IMPORTS);
 
-        model.getFields().forEach(field -> imports.addAll(field.getFieldType().getImports()));
+        model.getFields().forEach(field -> {
+            imports.addAll(field.getFieldType().getImports());
+            for (VariableElement methodParam : field.getMethodParameters()) {
+//                imports.addAll(FieldType.ofTypeMirror(methodParam.asType(), messager, types).getImports());
+            }
+        });
+        model.getSections().forEach(sec -> sec.getFields().forEach(field -> imports.addAll(field.getFieldType().getImports())));
         
+
         imports.removeIf(str -> str.startsWith(model.getMetadata().getPackage()));
         imports.removeIf(str -> str.startsWith("java.lang."));
         return imports;
@@ -76,11 +93,11 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
 
         List<String> javaImports = splitImports.get(true);
         List<String> otherImports = splitImports.get(false);
-        
+
         for (String i : otherImports) {
             println("import {};", i);
         }
-        
+
         println();
 
         for (String i : javaImports) {
@@ -160,7 +177,7 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
             // Access methods
             //
             """);
-        
+
         println();
 
         for (ConfigField field : model.getFields()) {
@@ -177,15 +194,10 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
             //
             
             """);
-//
-//        for (ConfigSection section : model.getSections()) {
-//            printAccessMethod(new ConfigFieldImpl(
-//                
-//                section.getFullyQualifiedName().toLowerCase()
-//            ));
-//            println();
-//            printSectionInterface(section);
-//        }
+
+        for (ConfigSection section : model.getSections()) {
+            printSectionInterface(section);
+        }
     }
 
     @Override
@@ -194,15 +206,23 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
         String name = field.getFieldName();
 
         StringBuilder paramBuilder = new StringBuilder();
-        if (field.getCustomParseMethod() != null) {
-            List<? extends VariableElement> parameters = field.getCustomParseMethod().getParameters();
-            for (int i = 0; i < parameters.size(); i++) {
-                VariableElement param = parameters.get(i);
+        List<VariableElement> methodParameters = field.getMethodParameters();
+        for (int i = 0; i < methodParameters.size(); i++) {
+            VariableElement param = methodParameters.get(i);
+            
+            if (i + 1 == methodParameters.size() && param.asType().getKind() == TypeKind.ARRAY) {
+                String typeName = param.asType().toString();
+                
+                paramBuilder.append(typeName, 0, typeName.length() - 2)
+                    .append("...")
+                    .append(" ")
+                    .append(param);
+            } else {
                 paramBuilder.append(param.asType().toString()).append(" ").append(param);
+            }
 
-                if (i + 1 < parameters.size()) {
-                    paramBuilder.append(", ");
-                }
+            if (i + 1 < methodParameters.size()) {
+                paramBuilder.append(", ");
             }
         }
 
@@ -211,14 +231,15 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
 
     @Override
     public void printSectionInterface(ConfigSection type) throws IOException {
-//        String name = type.getClassString();
-//        type.getFields()
-//        
-//        println("""
-//            interface {} {
-//                {} {}({});
-//            }""",
-//            
-//            );
+        println();
+        println("interface {} {", type.getSectionName());
+        incrementIndent();
+
+        for (ConfigField field : type.getFields()) {
+            printAccessMethod(field);
+        }
+
+        decrementIndent();
+        println("}");
     }
 }

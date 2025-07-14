@@ -57,7 +57,7 @@ public class StrokkConfigProcessor extends AbstractProcessor {
 
         for (ConfigModel model : parsedList) {
             JavaFilePrinter interfacePrinter = new JavaFilePrinter(
-                model, w -> new InterfaceSourcePrinterImpl(w, model), model.getMetadata().getInterfaceClass(), super.processingEnv.getFiler(), messagerWrapper
+                model, w -> new InterfaceSourcePrinterImpl(w, model, messagerWrapper, typesUtil), model.getMetadata().getInterfaceClass(), super.processingEnv.getFiler(), messagerWrapper
             );
 
             interfacePrinter.print();

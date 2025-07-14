@@ -1,12 +1,8 @@
 package net.strokkur.config.internal;
 
-import net.strokkur.config.internal.intermediate.ConfigField;
-import net.strokkur.config.internal.intermediate.FieldType;
-import org.jspecify.annotations.Nullable;
+import net.strokkur.config.internal.util.FieldNameContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import javax.lang.model.element.ExecutableElement;
 
 public class FieldTests {
 
@@ -52,33 +48,11 @@ public class FieldTests {
     }
 
     private void test(String input, String expected) {
-        ConfigField field = new NoopConfigFieldImpl(input);
+        FieldNameContainer field = new FieldNameContainerTestImpl(input);
 
         String dashed = field.getFieldNameDashed();
         Assertions.assertEquals(expected, dashed);
     }
 
-
-    public class NoopConfigFieldImpl implements ConfigField {
-        private final String fieldName;
-
-        public NoopConfigFieldImpl(String fieldName) {
-            this.fieldName = fieldName;
-        }
-
-        @Override
-        public FieldType getFieldType() {
-            return null;
-        }
-
-        @Override
-        public String getFieldName() {
-            return fieldName;
-        }
-
-        @Override
-        public @Nullable ExecutableElement getCustomParseMethod() {
-            return null;
-        }
-    }
+    public record FieldNameContainerTestImpl(String getFieldName) implements FieldNameContainer {}
 }

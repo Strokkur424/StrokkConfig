@@ -3,8 +3,8 @@ package net.strokkur.config.internal.parsing;
 import net.strokkur.config.Format;
 import net.strokkur.config.annotations.ConfigFilePath;
 import net.strokkur.config.annotations.ConfigNullable;
-import net.strokkur.config.annotations.CustomParse;
 import net.strokkur.config.annotations.CustomType;
+import net.strokkur.config.annotations.CustomTypeReturn;
 import net.strokkur.config.annotations.GenerateConfig;
 import net.strokkur.config.internal.exceptions.ProcessorException;
 import net.strokkur.config.internal.impl.ConfigMetadataImpl;
@@ -12,8 +12,6 @@ import net.strokkur.config.internal.impl.ConfigModelImpl;
 import net.strokkur.config.internal.impl.fields.ConfigFieldImpl;
 import net.strokkur.config.internal.impl.fields.ConfigSectionImpl;
 import net.strokkur.config.internal.impl.fields.CustomTypeImpl;
-import net.strokkur.config.internal.impl.fields.ObjectFieldTypeImpl;
-import net.strokkur.config.internal.impl.fields.PrimitiveFieldType;
 import net.strokkur.config.internal.intermediate.ConfigField;
 import net.strokkur.config.internal.intermediate.ConfigFormat;
 import net.strokkur.config.internal.intermediate.ConfigMetadata;
@@ -73,33 +71,83 @@ public class AnnotationParserImpl implements AnnotationParser {
     @Override
     @NullUnmarked
     public @NonNull ConfigField parseField(@NonNull TypeElement classElement, @NonNull VariableElement variable) throws ProcessorException {
-        CustomParse customParse = variable.getAnnotation(CustomParse.class);
-        ExecutableElement customParseElement = null;
-        String customParseMethodName = customParse != null ? customParse.value() : "";
+        ConfigField.Builder builder = ConfigFieldImpl.builder(
+            FieldType.ofTypeMirror(variable.asType(), messager, typesUtil),
+            variable.getSimpleName().toString()
+        );
 
-        if (!customParseMethodName.isBlank()) {
-            for (Element element : classElement.getEnclosedElements()) {
-                if (element instanceof ExecutableElement method) {
-                    if (method.getSimpleName().contentEquals(customParseMethodName)) {
-                        customParseElement = method;
-                        break;
+        if (!(variable.asType() instanceof DeclaredType declaredType)) {
+            // Primitives will never have any custom implementations
+            return builder.build();
+        }
+
+        Element element = declaredType.asElement();
+
+        // Check if the class is a custom type
+        if (element.getAnnotation(CustomType.class) != null) {
+            for (Element subElement : element.getEnclosedElements()) {
+                if (!(subElement instanceof ExecutableElement methodElement)) {
+                    continue;
+                }
+
+                if (methodElement.getAnnotation(CustomTypeReturn.class) != null) {
+                    // This is the custom method
+                    builder.setCustomParseMethod(methodElement);
+                    builder.setFieldType(FieldType.ofTypeMirror(methodElement.getReturnType(), messager, typesUtil));
+                    
+                    for (VariableElement parameter : methodElement.getParameters()) {
+                        builder.addMethodParameter(parameter);
                     }
+                    builder.setIsVarArgs(methodElement.isVarArgs());
+                    
+                    return builder.build();
                 }
             }
         }
-
-        FieldType type;
-        if (variable.asType().getKind().isPrimitive()) {
-            type = new PrimitiveFieldType(variable.asType().toString());
-        } else {
-            type = new ObjectFieldTypeImpl(messager, (DeclaredType) variable.asType(), typesUtil);
+        
+        // Check if the class is an inner class of the config class --> section
+        for (Element subElement : classElement.getEnclosedElements()) {
+            if (!(subElement instanceof TypeElement innerClassElement)) {
+                continue;
+            }
+            
+            if (innerClassElement == element) {
+                // The declared type is a section; therefor we apply our own logic instead of just serializing
+                builder.setIsSectionAccessor(true);
+                return builder.build();
+            }
         }
 
-        return new ConfigFieldImpl(
-            type,
-            variable.getSimpleName().toString(),
-            customParseElement
-        );
+        return builder.build();
+//        
+//        CustomParse customParse = variable.getAnnotation(CustomParse.class);
+//        ExecutableElement customParseElement = null;
+//        String customParseMethodName = customParse != null ? customParse.value() : "";
+//        
+//        boolean hasCustomType = false;
+//
+//        TypeMirror variableReturnType = variable.asType();
+//        if (variableReturnType instanceof DeclaredType declaredType) {
+//            TypeElement typeElement = (TypeElement) typesUtil.asElement(declaredType);
+//
+//            if (typeElement.getAnnotation(CustomType.class) != null) {
+//                // This is a custom type, so we should reflect that.
+//                hasCustomType = true;
+//                customParseMethodName = 
+//            }
+//        }
+//        
+//
+//        if (!customParseMethodName.isBlank()) {
+//            for (Element element : classElement.getEnclosedElements()) {
+//                if (element instanceof ExecutableElement method) {
+//                    if (method.getSimpleName().contentEquals(customParseMethodName)) {
+//                        customParseElement = method;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -125,12 +173,12 @@ public class AnnotationParserImpl implements AnnotationParser {
     @Override
     @NullUnmarked
     public @NonNull ConfigSection parseConfigSection(@NonNull TypeElement classElement) throws ProcessorException {
-        ConfigSectionImpl impl = new ConfigSectionImpl();
+        ConfigSectionImpl impl = new ConfigSectionImpl(classElement.getSimpleName().toString());
         impl.setDefaultNonNull(classElement.getAnnotation(ConfigNullable.class) != null);
 
         for (Element element : classElement.getEnclosedElements()) {
             if (element instanceof VariableElement parameter) {
-                impl.addConfigField(parseField(classElement, parameter));
+                impl.addField(parseField(classElement, parameter));
             }
         }
 

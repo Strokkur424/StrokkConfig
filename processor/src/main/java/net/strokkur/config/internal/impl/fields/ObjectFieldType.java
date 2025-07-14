@@ -13,14 +13,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ObjectFieldTypeImpl implements FieldType {
+public class ObjectFieldType implements FieldType {
 
     private final MessagerWrapper messagerWrapper;
     private final DeclaredType type;
     private final TypeElement element;
     private final Types types;
 
-    public ObjectFieldTypeImpl(MessagerWrapper messagerWrapper, DeclaredType type, Types types) {
+    public ObjectFieldType(MessagerWrapper messagerWrapper, DeclaredType type, Types types) {
         this.messagerWrapper = messagerWrapper;
         this.type = type;
         this.element = (TypeElement) types.asElement(type);
@@ -37,8 +37,8 @@ public class ObjectFieldTypeImpl implements FieldType {
         return getSimpleNameRecursive(element, type);
     }
 
-    private String getSimpleNameRecursive(Element element, DeclaredType type) {
-        String simpleName = getFullyQualifiedName().substring(getPackage(element).length() + 1);
+    private String getSimpleNameRecursive(TypeElement element, DeclaredType type) {
+        String simpleName = element.getQualifiedName().toString().substring(getPackage(element).length() + 1);
 
         List<? extends TypeMirror> parameters = type.getTypeArguments();
         if (parameters.isEmpty()) {
@@ -48,12 +48,19 @@ public class ObjectFieldTypeImpl implements FieldType {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < parameters.size(); i++) {
             TypeMirror param = parameters.get(i);
-            if (!(param instanceof DeclaredType declared)) {
-                messagerWrapper.warnElement("Parameter {} is not a DeclaredType", types.asElement(param), param);
+            
+            Element paramElement = types.asElement(param);
+            if (!(paramElement instanceof TypeElement declaredTypeElement)) {
+                messagerWrapper.warnElement("Parameter element {} is not a TypeElement", paramElement, param);
                 continue;
             }
 
-            builder.append(getSimpleNameRecursive(types.asElement(param), declared));
+            if (!(param instanceof DeclaredType declared)) {
+                messagerWrapper.warnElement("Parameter type {} is not a DeclaredType", declaredTypeElement, param);
+                continue;
+            }
+
+            builder.append(getSimpleNameRecursive(declaredTypeElement, declared));
             if (i + 1 < parameters.size()) {
                 builder.append(", ");
             }
@@ -86,7 +93,7 @@ public class ObjectFieldTypeImpl implements FieldType {
             }
 
             if (!(param instanceof DeclaredType declared)) {
-                messagerWrapper.warnElement("Parameter type {} is not a DeclaredType", types.asElement(param), param);
+                messagerWrapper.warnElement("Parameter type {} is not a DeclaredType", declaredTypeElement, param);
                 continue;
             }
 
