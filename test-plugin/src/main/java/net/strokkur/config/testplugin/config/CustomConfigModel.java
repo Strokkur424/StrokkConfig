@@ -35,7 +35,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Properties;
 
-@GenerateConfig("CustomConfig")
+@GenerateConfig
 @ConfigFormat(Format.CUSTOM)
 @ConfigFilePath("custom/stuff.properties")
 @NullMarked

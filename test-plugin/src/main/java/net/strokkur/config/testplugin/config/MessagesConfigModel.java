@@ -26,7 +26,7 @@ import net.strokkur.config.annotations.CustomParse;
 import net.strokkur.config.annotations.GenerateConfig;
 import org.jspecify.annotations.NullMarked;
 
-@GenerateConfig("MessagesConfig")
+@GenerateConfig
 @ConfigFormat(Format.YAML_SNAKEYAML)
 @NullMarked
 public class MessagesConfigModel {

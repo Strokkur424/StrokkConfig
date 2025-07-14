@@ -287,10 +287,15 @@ public class AnnotationParserImpl implements AnnotationParser {
 
         boolean defaultNonNull = classElement.getAnnotation(ConfigNullable.class) == null;
 
+        String modelClassName = classElement.getSimpleName().toString();
+        String newClassName = generateConfig.value().isBlank()
+            ? modelClassName.endsWith("Model") ? modelClassName.substring(0, modelClassName.length() - 5) : modelClassName + "Config"
+            : generateConfig.value();
+
         return new ConfigMetadataImpl(
-            classElement.getSimpleName().toString(),
+            modelClassName,
             packageName,
-            generateConfig.value(),
+            newClassName,
             ConfigFormat.getFromEnum(format),
             path,
             defaultNonNull,

@@ -21,7 +21,7 @@ import net.strokkur.config.Format;
 import net.strokkur.config.annotations.ConfigFormat;
 import net.strokkur.config.annotations.GenerateConfig;
 
-@GenerateConfig("SimpleConfig")
+@GenerateConfig
 @ConfigFormat(Format.YAML_SNAKEYAML)
 class SimpleConfigModel {
     String helloWorld = "Hello, Config!";

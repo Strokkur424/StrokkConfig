@@ -132,7 +132,7 @@ public class TestPlugin extends JavaPlugin implements Listener {
                         if (!(ctx.getSource().getExecutor() instanceof Player player)) {
                             return 0;
                         }
-                        
+
                         player.give(customConfig.andAMaterialForGoodMeasure().createItemStack());
                         return Command.SINGLE_SUCCESS;
                     })

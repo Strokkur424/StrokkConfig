@@ -40,8 +40,8 @@ import java.util.List;
 
 import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
 
-@ConfigSerializable // Needed by Configurate
-@GenerateConfig("MyCoolConfig")
+@ConfigSerializable
+@GenerateConfig
 @ConfigFilePath("cool.yaml")
 @ConfigFormat(Format.YAML_CONFIGURATE)
 @ConfigNonNull
