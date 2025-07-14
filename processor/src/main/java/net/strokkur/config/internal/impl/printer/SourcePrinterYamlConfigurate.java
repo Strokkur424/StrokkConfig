@@ -52,7 +52,7 @@ public class SourcePrinterYamlConfigurate extends AbstractImplementationSourcePr
                 
                 CommentedConfigurationNode node = loader.load(ConfigurationOptions.defaults());
                 model = node.get({}.class);
-
+                
                 if (!Files.exists(path)) {
                     // If the file doesn't exist, create it
                     model = new {}();
@@ -68,7 +68,6 @@ public class SourcePrinterYamlConfigurate extends AbstractImplementationSourcePr
     @Override
     protected void printExtra() throws IOException {
         
-        
-        
+
     }
 }

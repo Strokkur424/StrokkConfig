@@ -102,9 +102,9 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
         printAccessMethods();
 
         printNestedClasses();
-        
+
         printExtra();
-        
+
         decrementIndent();
         println("}");
     }

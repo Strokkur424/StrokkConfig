@@ -41,7 +41,7 @@ public class TestPlugin extends JavaPlugin implements Listener {
 
     @MonotonicNonNull
     private MessagesConfig messagesConfig;
-    
+
     @MonotonicNonNull
     private MyCoolConfig coolConfig;
 

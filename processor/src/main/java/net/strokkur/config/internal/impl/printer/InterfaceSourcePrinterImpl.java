@@ -139,7 +139,7 @@ public class InterfaceSourcePrinterImpl extends AbstractSharedSourcePrinter impl
             }
 
             printAccessMethod(field);
-            
+
             if (i + 1 < fields.size()) {
                 println();
             }
@@ -151,7 +151,7 @@ public class InterfaceSourcePrinterImpl extends AbstractSharedSourcePrinter impl
         if (model.getSections().isEmpty()) {
             return;
         }
-        
+
         printBlock("""
             //
             // Nested classes

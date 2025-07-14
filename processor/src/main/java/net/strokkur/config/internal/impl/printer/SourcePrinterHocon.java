@@ -52,7 +52,7 @@ public class SourcePrinterHocon extends AbstractImplementationSourcePrinter {
                 
                 CommentedConfigurationNode node = loader.load(ConfigurationOptions.defaults());
                 model = node.get({}.class);
-
+                
                 if (!Files.exists(path)) {
                     // If the file doesn't exist, create it
                     model = new {}();
