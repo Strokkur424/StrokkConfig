@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "net.strokkur"
-version = "1.0.1"
+version = "1.0.0"
 
 allprojects {
     apply {
