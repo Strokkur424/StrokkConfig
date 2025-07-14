@@ -19,6 +19,7 @@ package net.strokkur.config.internal.intermediate;
 
 import net.strokkur.config.Format;
 import net.strokkur.config.internal.exceptions.ProcessorException;
+import net.strokkur.config.internal.impl.printer.SourcePrinterCustom;
 import net.strokkur.config.internal.impl.printer.SourcePrinterGson;
 import net.strokkur.config.internal.impl.printer.SourcePrinterHocon;
 import net.strokkur.config.internal.impl.printer.SourcePrinterYamlConfigurate;
@@ -36,6 +37,7 @@ public interface ConfigFormat {
             case JSON_GSON -> new GsonFormat();
             case YAML_CONFIGURATE -> new YamlConfigurateFormat();
             case YAML_SNAKEYAML -> new YamlSnakeYamlFormat();
+            case CUSTOM -> new CustomFormat();
             default -> throw new ProcessorException("Failed to find implementation for format '" + format + '.');
         };
     }
@@ -92,6 +94,19 @@ public interface ConfigFormat {
         @Override
         public String defaultExtension() {
             return ".yaml";
+        }
+    }
+    
+    class CustomFormat implements ConfigFormat {
+
+        @Override
+        public SourcePrinter getSourcesPrinter(Writer writer, ConfigModel configModel, MessagerWrapper messager) {
+            return new SourcePrinterCustom(writer, configModel, messager);
+        }
+
+        @Override
+        public String defaultExtension() {
+            return ".txt";
         }
     }
 }

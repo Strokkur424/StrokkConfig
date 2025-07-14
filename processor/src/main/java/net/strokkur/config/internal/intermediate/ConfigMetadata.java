@@ -17,6 +17,8 @@
  */
 package net.strokkur.config.internal.intermediate;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Metadata represented by annotations on the config model class.
  */
@@ -33,6 +35,8 @@ public interface ConfigMetadata {
     String getImplementationClass();
 
     ConfigFormat getFormat();
+    
+    @Nullable CustomSerializers getCustomSerializers();
 
     boolean isDefaultNonNull();
 }

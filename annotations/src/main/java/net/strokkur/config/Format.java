@@ -17,6 +17,9 @@
  */
 package net.strokkur.config;
 
+import net.strokkur.config.annotations.CustomDeserializer;
+import net.strokkur.config.annotations.CustomSerializer;
+
 /**
  * The format of the configuration file.
  */
@@ -48,5 +51,35 @@ public enum Format {
      * <p>
      * This format uses the <a href="https://github.com/SpongePowered/Configurate">Configurate</a> library.
      */
-    HOCON
+    HOCON,
+
+    /**
+     * A custom serialization format.
+     * <p>
+     * Make sure to include two static methods, one for serialization and one for deserialization,
+     * annotated with {@link CustomSerializer} and the other with {@link CustomDeserializer}.
+     * <p>
+     * Example:
+     * <pre>{@code
+     * @ConfigModel
+     * @ConfigFormat(Format.CUSTOM)
+     * class ConfigModel {
+     *     
+     *     public String someValue = "hey there!";
+     *     
+     *     @CustomSerializer
+     *     static String serialize(ConfigModel model) {
+     *         return someValue;
+     *     }
+     *     
+     *     @CustomDeserializer
+     *     static ConfigModel deserialize(String serialized) {
+     *         ConfigModel model = new ConfigModel();
+     *         model.someValue = serialized;
+     *         return model;
+     *     } 
+     * }
+     * }</pre>
+     */
+    CUSTOM
 }

@@ -24,9 +24,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.strokkur.config.testplugin.config.MyCoolConfig;
 import net.strokkur.config.testplugin.config.MyCoolConfigImpl;
+import net.strokkur.config.testplugin.config.custom.CustomConfig;
+import net.strokkur.config.testplugin.config.custom.CustomConfigImpl;
 import net.strokkur.config.testplugin.config.messages.MessagesConfig;
 import net.strokkur.config.testplugin.config.messages.MessagesConfigImpl;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -45,13 +48,18 @@ public class TestPlugin extends JavaPlugin implements Listener {
     @MonotonicNonNull
     private MyCoolConfig coolConfig;
 
+    @MonotonicNonNull
+    private CustomConfig customConfig;
+
     @Override
     public void onLoad() {
         messagesConfig = new MessagesConfigImpl();
         coolConfig = new MyCoolConfigImpl();
+        customConfig = new CustomConfigImpl();
         try {
             messagesConfig.reload(this);
             coolConfig.reload(this);
+            customConfig.reload(this);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -63,6 +71,8 @@ public class TestPlugin extends JavaPlugin implements Listener {
                         .executes(ctx -> {
                             try {
                                 messagesConfig.reload(this);
+                                coolConfig.reload(this);
+                                customConfig.reload(this);
                                 ctx.getSource().getSender().sendMessage(messagesConfig.reloadAll(MiniMessage.miniMessage()));
                             } catch (IOException ex) {
                                 ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
@@ -75,7 +85,10 @@ public class TestPlugin extends JavaPlugin implements Listener {
                         .executes(ctx -> {
                             try {
                                 messagesConfig.reload(this);
-                                ctx.getSource().getSender().sendMessage(messagesConfig.reload(MiniMessage.miniMessage()));
+                                ctx.getSource().getSender().sendMessage(messagesConfig.reload(
+                                    MiniMessage.miniMessage(),
+                                    Placeholder.unparsed("config", MessagesConfig.FILE_PATH)
+                                ));
                             } catch (IOException ex) {
                                 ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
                                 getComponentLogger().error("Failed to reload all configs", ex);
@@ -83,6 +96,46 @@ public class TestPlugin extends JavaPlugin implements Listener {
                             return Command.SINGLE_SUCCESS;
                         })
                     )
+                    .then(Commands.literal(MyCoolConfig.FILE_PATH)
+                        .executes(ctx -> {
+                            try {
+                                coolConfig.reload(this);
+                                ctx.getSource().getSender().sendMessage(messagesConfig.reload(
+                                    MiniMessage.miniMessage(),
+                                    Placeholder.unparsed("config", MyCoolConfig.FILE_PATH)
+                                ));
+                            } catch (IOException ex) {
+                                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
+                                getComponentLogger().error("Failed to reload all configs", ex);
+                            }
+                            return Command.SINGLE_SUCCESS;
+                        })
+                    )
+                    .then(Commands.literal(CustomConfig.FILE_PATH)
+                        .executes(ctx -> {
+                            try {
+                                customConfig.reload(this);
+                                ctx.getSource().getSender().sendMessage(messagesConfig.reload(
+                                    MiniMessage.miniMessage(),
+                                    Placeholder.unparsed("config", CustomConfig.FILE_PATH)
+                                ));
+                            } catch (IOException ex) {
+                                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
+                                getComponentLogger().error("Failed to reload all configs", ex);
+                            }
+                            return Command.SINGLE_SUCCESS;
+                        })
+                    )
+                )
+                .then(Commands.literal("give-custom-item")
+                    .executes(ctx -> {
+                        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+                            return 0;
+                        }
+                        
+                        player.give(customConfig.andAMaterialForGoodMeasure().createItemStack());
+                        return Command.SINGLE_SUCCESS;
+                    })
                 )
                 .build()
             )

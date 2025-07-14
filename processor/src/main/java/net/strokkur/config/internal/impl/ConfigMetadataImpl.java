@@ -19,6 +19,7 @@ package net.strokkur.config.internal.impl;
 
 import net.strokkur.config.internal.intermediate.ConfigFormat;
 import net.strokkur.config.internal.intermediate.ConfigMetadata;
+import net.strokkur.config.internal.intermediate.CustomSerializers;
 import org.jspecify.annotations.Nullable;
 
 public class ConfigMetadataImpl implements ConfigMetadata {
@@ -29,14 +30,17 @@ public class ConfigMetadataImpl implements ConfigMetadata {
     private final ConfigFormat configFormat;
     private final @Nullable String filePath;
     private final boolean defaultNonNull;
+    private final CustomSerializers customSerializers;
 
-    public ConfigMetadataImpl(String originalClass, String packageName, String interfaceClassName, ConfigFormat configFormat, @Nullable String filePath, boolean defaultNonNull) {
+    public ConfigMetadataImpl(String originalClass, String packageName, String interfaceClassName, ConfigFormat configFormat,
+                              @Nullable String filePath, boolean defaultNonNull, @Nullable CustomSerializers customSerializers) {
         this.originalClass = originalClass;
         this.packageName = packageName;
         this.interfaceClassName = interfaceClassName;
         this.configFormat = configFormat;
         this.filePath = filePath;
         this.defaultNonNull = defaultNonNull;
+        this.customSerializers = customSerializers;
     }
 
     @Override
@@ -72,5 +76,10 @@ public class ConfigMetadataImpl implements ConfigMetadata {
     @Override
     public boolean isDefaultNonNull() {
         return defaultNonNull;
+    }
+
+    @Override
+    public @Nullable CustomSerializers getCustomSerializers() {
+        return customSerializers;
     }
 }
