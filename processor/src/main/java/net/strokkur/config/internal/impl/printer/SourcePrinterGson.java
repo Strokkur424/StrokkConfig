@@ -15,7 +15,7 @@ public class SourcePrinterGson extends AbstractImplementationSourcePrinter {
     }
 
     @Override
-    Set<String> getImplementationImports() {
+    protected Set<String> getImplementationImports() {
         return Set.of(
             "com.google.gson.Gson",
             "com.google.gson.GsonBuilder",

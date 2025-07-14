@@ -32,7 +32,7 @@ public class SourcePrinterYamlConfigurate extends AbstractImplementationSourcePr
     }
 
     @Override
-    Set<String> getImplementationImports() {
+    protected Set<String> getImplementationImports() {
         return Set.of(
             "org.spongepowered.configurate.CommentedConfigurationNode",
             "org.spongepowered.configurate.ConfigurationOptions",
@@ -63,5 +63,12 @@ public class SourcePrinterYamlConfigurate extends AbstractImplementationSourcePr
             model.getMetadata().getOriginalClass(),
             model.getMetadata().getOriginalClass()
         );
+    }
+
+    @Override
+    protected void printExtra() throws IOException {
+        
+        
+        
     }
 }

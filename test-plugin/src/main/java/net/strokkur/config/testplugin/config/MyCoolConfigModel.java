@@ -42,8 +42,8 @@ import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
 
 @ConfigSerializable // Needed by Configurate
 @GenerateConfig("MyCoolConfig")
-@ConfigFilePath("config.conf")
-@ConfigFormat(Format.HOCON)
+@ConfigFilePath("cool.yaml")
+@ConfigFormat(Format.YAML_CONFIGURATE)
 @ConfigNonNull
 class MyCoolConfigModel {
 
@@ -58,7 +58,7 @@ class MyCoolConfigModel {
     public static class Messages {
 
         @CustomParse("parseToMiniMessage")
-        public String runCommand;
+        public String runCommand = "Successfully ran the command!";
 
         public Component parseToMiniMessage(String message, MiniMessage mm, TagResolver... resolvers) {
             return mm.deserialize(message, resolvers);

@@ -41,6 +41,8 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
 
     abstract Set<String> getImplementationImports();
 
+    protected void printExtra() throws IOException {}
+
     @Override
     public Set<String> getAllImports() {
         Set<String> out = super.getAllImports();
@@ -100,7 +102,9 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
         printAccessMethods();
 
         printNestedClasses();
-
+        
+        printExtra();
+        
         decrementIndent();
         println("}");
     }
@@ -216,7 +220,7 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
             }
 
             printAccessMethodImpl(field, "model");
-            
+
             if (i + 1 < fields.size()) {
                 println();
             }
@@ -228,7 +232,7 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
         if (model.getSections().isEmpty()) {
             return;
         }
-        
+
         printBlock("""
             //
             // Nested classes

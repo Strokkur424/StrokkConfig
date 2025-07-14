@@ -22,6 +22,7 @@ import net.strokkur.config.internal.exceptions.ProcessorException;
 import net.strokkur.config.internal.impl.printer.SourcePrinterGson;
 import net.strokkur.config.internal.impl.printer.SourcePrinterHocon;
 import net.strokkur.config.internal.impl.printer.SourcePrinterYamlConfigurate;
+import net.strokkur.config.internal.impl.printer.SourcePrinterYamlSnakeYaml;
 import net.strokkur.config.internal.printer.SourcePrinter;
 import net.strokkur.config.internal.util.MessagerWrapper;
 
@@ -34,6 +35,7 @@ public interface ConfigFormat {
             case HOCON -> new HoconFormat();
             case JSON_GSON -> new GsonFormat();
             case YAML_CONFIGURATE -> new YamlConfigurateFormat();
+            case YAML_SNAKEYAML -> new YamlSnakeYamlFormat();
             default -> throw new ProcessorException("Failed to find implementation for format '" + format + '.');
         };
     }
@@ -42,7 +44,7 @@ public interface ConfigFormat {
     String defaultExtension();
 
     class HoconFormat implements ConfigFormat {
-        
+
         @Override
         public SourcePrinter getSourcesPrinter(Writer writer, ConfigModel configModel, MessagerWrapper messager) {
             return new SourcePrinterHocon(writer, configModel, messager);
@@ -53,9 +55,9 @@ public interface ConfigFormat {
             return ".conf";
         }
     }
-    
+
     class GsonFormat implements ConfigFormat {
-        
+
         @Override
         public SourcePrinter getSourcesPrinter(Writer writer, ConfigModel configModel, MessagerWrapper messager) {
             return new SourcePrinterGson(writer, configModel, messager);
@@ -66,12 +68,25 @@ public interface ConfigFormat {
             return ".json";
         }
     }
-    
+
     class YamlConfigurateFormat implements ConfigFormat {
 
         @Override
         public SourcePrinter getSourcesPrinter(Writer writer, ConfigModel configModel, MessagerWrapper messager) {
             return new SourcePrinterYamlConfigurate(writer, configModel, messager);
+        }
+
+        @Override
+        public String defaultExtension() {
+            return ".yaml";
+        }
+    }
+
+    class YamlSnakeYamlFormat implements ConfigFormat {
+
+        @Override
+        public SourcePrinter getSourcesPrinter(Writer writer, ConfigModel configModel, MessagerWrapper messager) {
+            return new SourcePrinterYamlSnakeYaml(writer, configModel, messager);
         }
 
         @Override

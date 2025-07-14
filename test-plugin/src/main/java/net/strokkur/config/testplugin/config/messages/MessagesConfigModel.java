@@ -25,11 +25,9 @@ import net.strokkur.config.annotations.ConfigFormat;
 import net.strokkur.config.annotations.CustomParse;
 import net.strokkur.config.annotations.GenerateConfig;
 import org.jspecify.annotations.NullMarked;
-import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @GenerateConfig("MessagesConfig")
-@ConfigSerializable
-@ConfigFormat(Format.JSON_GSON)
+@ConfigFormat(Format.YAML_SNAKEYAML)
 @NullMarked
 public class MessagesConfigModel {
 
@@ -50,16 +48,5 @@ public class MessagesConfigModel {
 
     public Component parseToMiniMessage(String message, MiniMessage mm, TagResolver... resolvers) {
         return mm.deserialize(message, resolvers);
-    }
-
-    @Override
-    public String toString() {
-        return "MessagesConfigModel{" +
-               "pluginStartup='" + pluginStartup + '\'' +
-               ", pluginShutdown='" + pluginShutdown + '\'' +
-               ", reload='" + reload + '\'' +
-               ", reloadAll='" + reloadAll + '\'' +
-               ", joinMessage='" + joinMessage + '\'' +
-               '}';
     }
 }

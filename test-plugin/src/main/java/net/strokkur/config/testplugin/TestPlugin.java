@@ -22,6 +22,8 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.strokkur.config.testplugin.config.MyCoolConfig;
+import net.strokkur.config.testplugin.config.MyCoolConfigImpl;
 import net.strokkur.config.testplugin.config.messages.MessagesConfig;
 import net.strokkur.config.testplugin.config.messages.MessagesConfigImpl;
 import org.bukkit.Bukkit;
@@ -39,12 +41,17 @@ public class TestPlugin extends JavaPlugin implements Listener {
 
     @MonotonicNonNull
     private MessagesConfig messagesConfig;
+    
+    @MonotonicNonNull
+    private MyCoolConfig coolConfig;
 
     @Override
     public void onLoad() {
         messagesConfig = new MessagesConfigImpl();
+        coolConfig = new MyCoolConfigImpl();
         try {
             messagesConfig.reload(this);
+            coolConfig.reload(this);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -32,7 +32,7 @@ public class SourcePrinterHocon extends AbstractImplementationSourcePrinter {
     }
 
     @Override
-    Set<String> getImplementationImports() {
+    protected Set<String> getImplementationImports() {
         return Set.of(
             "org.spongepowered.configurate.CommentedConfigurationNode",
             "org.spongepowered.configurate.ConfigurationOptions",
