@@ -38,7 +38,7 @@ public interface ImplementationSourcePrinter extends SharedSourcePrinter {
     default Set<String> getStandardImports() {
         return STANDARD_IMPL_IMPORTS;
     }
-    
+
     void printModelVariable() throws IOException;
     void printNestedSectionsVariables() throws IOException;
 

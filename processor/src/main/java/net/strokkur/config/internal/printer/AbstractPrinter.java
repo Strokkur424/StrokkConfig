@@ -17,17 +17,11 @@
  */
 package net.strokkur.config.internal.printer;
 
-import net.strokkur.config.internal.intermediate.Parameter;
 import org.intellij.lang.annotations.Language;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("UnusedReturnValue")
 public abstract class AbstractPrinter implements SourcePrinter {
@@ -45,7 +39,7 @@ public abstract class AbstractPrinter implements SourcePrinter {
     public AbstractPrinter(@Nullable Writer writer) {
         this(0, writer);
     }
-    
+
 
     @Override
     @Nullable
@@ -79,7 +73,7 @@ public abstract class AbstractPrinter implements SourcePrinter {
         if (writer == null) {
             throw new IOException("No writer set.");
         }
-        
+
         message = message.stripTrailing();
         if (!message.isBlank()) {
             writer.append(indentString);

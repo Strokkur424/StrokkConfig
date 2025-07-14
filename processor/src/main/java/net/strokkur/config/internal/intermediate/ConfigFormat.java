@@ -26,17 +26,17 @@ import net.strokkur.config.internal.util.MessagerWrapper;
 import java.io.Writer;
 
 public interface ConfigFormat {
-    
+
     static ConfigFormat getFromEnum(Format format) throws ProcessorException {
         return switch (format) {
             case HOCON -> new HoconFormat();
             default -> throw new ProcessorException("Failed to find implementation for format '" + format + '.');
         };
     }
-    
+
     SourcePrinter getSourcesPrinter(Writer writer, ConfigModel configModel, MessagerWrapper messager);
     String defaultExtension();
-    
+
     class HoconFormat implements ConfigFormat {
         @Override
         public SourcePrinter getSourcesPrinter(Writer writer, ConfigModel configModel, MessagerWrapper messager) {

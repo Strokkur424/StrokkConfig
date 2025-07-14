@@ -160,7 +160,7 @@ public class AnnotationParserImpl implements AnnotationParser {
                 parameter.getSimpleName().toString()
             ));
         }
-        
+
         builder.setCustomParseMethodType(type);
         builder.setIsVarArgs(methodElement.isVarArgs());
         return builder.build();

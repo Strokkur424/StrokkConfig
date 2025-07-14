@@ -40,7 +40,7 @@ public interface ConfigField extends FieldNameContainer {
 
     @Nullable
     ExecutableElement getCustomParseMethod();
-    
+
     CustomParseMethodType getCustomParseMethodType();
 
     interface Builder {

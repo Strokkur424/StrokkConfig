@@ -1,3 +1,20 @@
+/*
+ * StrokkCommands - A super simple annotation based zero-shade Paper configuration library.
+ * Copyright (C) 2025 Strokkur24
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, see <https://www.gnu.org/licenses/>.
+ */
 package net.strokkur.config.internal.impl.printer;
 
 import net.strokkur.config.internal.impl.fields.ArrayFieldType;
@@ -285,7 +302,7 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
         if (!field.isNullable()) {
             builder.append(", m -> m");
         }
-        
+
         if (field.getCustomParseMethodType() != CustomParseMethodType.CUSTOM_PARSE) {
             builder.append(".");
             builder.append(field.getFieldName());
@@ -296,10 +313,10 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
             builder.append(".");
             builder.append(methodElement.getSimpleName().toString());
             builder.append("(");
-            
+
             if (field.getCustomParseMethodType() == CustomParseMethodType.CUSTOM_PARSE) {
                 builder.append("m.").append(field.getFieldName());
-                
+
                 if (!methodParameters.isEmpty()) {
                     builder.append(", ");
                 }
@@ -312,7 +329,7 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
                     builder.append(", ");
                 }
             }
-                        
+
             builder.append(")");
         }
 

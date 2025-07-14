@@ -37,7 +37,7 @@ public interface FieldType {
         if (typeMirror.getKind().isPrimitive()) {
             return new PrimitiveFieldType(typeMirror.toString());
         }
-        
+
         if (typeMirror instanceof ArrayType array) {
             return new ArrayFieldType(messager, array, typesUtil);
         }

@@ -151,7 +151,7 @@ public final class ConfigFieldImpl implements ConfigField {
             this.isVarArgs = value;
             return this;
         }
-        
+
         @Override
         public Builder setCustomParseMethodType(CustomParseMethodType customParseMethodType) {
             this.customParseMethodType = customParseMethodType;
