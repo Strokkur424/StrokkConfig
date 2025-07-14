@@ -44,6 +44,13 @@ subprojects {
     version = rootProject.version
     group = rootProject.group
 
+    if (name.contains("annotations")) {
+        java {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+
     if (name.contains("processor") || name.contains("annotations")) {
         apply {
             plugin<PublishData>()
