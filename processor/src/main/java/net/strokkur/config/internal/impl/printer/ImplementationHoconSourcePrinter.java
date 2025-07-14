@@ -44,11 +44,11 @@ public class ImplementationHoconSourcePrinter extends AbstractImplementationSour
     protected void printImplementationDependantReloadImpl() throws IOException {
         printBlock("""
                 HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
-                            .path(path)
-                            .emitComments(true)
-                            .prettyPrinting(true)
-                            .indent(2)
-                            .build();
+                    .path(path)
+                    .emitComments(true)
+                    .prettyPrinting(true)
+                    .indent(2)
+                    .build();
                 
                 CommentedConfigurationNode node = loader.createNode(ConfigurationOptions.defaults());
                 model = node.get({}.class);

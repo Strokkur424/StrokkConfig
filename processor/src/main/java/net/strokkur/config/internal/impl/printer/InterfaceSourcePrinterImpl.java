@@ -64,7 +64,7 @@ public class InterfaceSourcePrinterImpl extends AbstractSharedSourcePrinter impl
 
     @Override
     protected String getJavaDocInfo() {
-        return "A config access interface generated from {@link {}}.";
+        return "A config access interface generated from {@link %s}.".formatted(model.getMetadata().getOriginalClass());
     }
 
     @Override
@@ -130,19 +130,28 @@ public class InterfaceSourcePrinterImpl extends AbstractSharedSourcePrinter impl
 
         println();
 
-        for (ConfigField field : model.getFields()) {
+        List<ConfigField> fields = model.getFields();
+        for (int i = 0; i < fields.size(); i++) {
+            ConfigField field = fields.get(i);
             if (field.isSectionAccessor()) {
                 // We handle those below
                 continue;
             }
 
             printAccessMethod(field);
-            println();
+            
+            if (i + 1 < fields.size()) {
+                println();
+            }
         }
     }
 
     @Override
     public void printNestedInterfaces() throws IOException {
+        if (model.getSections().isEmpty()) {
+            return;
+        }
+        
         printBlock("""
             //
             // Nested classes

@@ -58,8 +58,6 @@ public abstract class AbstractSharedSourcePrinter extends AbstractPrinter implem
 
     @Override
     public void printClassJavaDoc() throws IOException {
-        String line = getJavaDocInfo().replaceFirst("\\{}", model.getMetadata().getOriginalClass());
-
         printBlock("""
                 /**
                  * {}
@@ -69,7 +67,7 @@ public abstract class AbstractSharedSourcePrinter extends AbstractPrinter implem
                  * @see {}
                  * @see {}
                  */""",
-            line,
+            getJavaDocInfo(),
             BuildConstants.VERSION,
             model.getMetadata().getOriginalClass(),
             seeOther()

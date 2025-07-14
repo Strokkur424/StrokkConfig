@@ -50,7 +50,7 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
 
     @Override
     protected String getJavaDocInfo() {
-        return "The generated implementation for the {@link {}} interface.";
+        return "The generated implementation for the {@link %s} interface.".formatted(model.getMetadata().getInterfaceClass());
     }
 
     @Override
@@ -152,7 +152,6 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
     @Override
     public void printReloadMethodImplementation() throws IOException {
         printBlock("""
-            
             //
             // Reloading
             //
@@ -209,18 +208,27 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
             //""");
         println();
 
-        for (ConfigField field : model.getFields()) {
+        List<ConfigField> fields = model.getFields();
+        for (int i = 0; i < fields.size(); i++) {
+            ConfigField field = fields.get(i);
             if (field.isSectionAccessor()) {
                 continue;
             }
 
             printAccessMethodImpl(field, "model");
-            println();
+            
+            if (i + 1 < fields.size()) {
+                println();
+            }
         }
     }
 
     @Override
     public void printNestedClasses() throws IOException {
+        if (model.getSections().isEmpty()) {
+            return;
+        }
+        
         printBlock("""
             //
             // Nested classes
