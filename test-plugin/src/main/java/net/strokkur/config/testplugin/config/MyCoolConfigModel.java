@@ -73,10 +73,6 @@ class MyCoolConfigModel {
         public String type;
         public String name;
 
-        public ItemDefinition() {
-            this(null, null);
-        }
-
         public ItemDefinition(String type, String name) {
             this.type = type;
             this.name = name;

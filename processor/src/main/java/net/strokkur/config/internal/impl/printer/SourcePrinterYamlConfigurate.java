@@ -67,7 +67,7 @@ public class SourcePrinterYamlConfigurate extends AbstractImplementationSourcePr
 
     @Override
     protected void printExtra() throws IOException {
-        
+
 
     }
 }
