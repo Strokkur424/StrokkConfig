@@ -50,4 +50,15 @@ public class MessagesConfigModel {
     public Component parseToMiniMessage(String message, MiniMessage mm, TagResolver... resolvers) {
         return mm.deserialize(message, resolvers);
     }
+
+    @Override
+    public String toString() {
+        return "MessagesConfigModel{" +
+               "pluginStartup='" + pluginStartup + '\'' +
+               ", pluginShutdown='" + pluginShutdown + '\'' +
+               ", reload='" + reload + '\'' +
+               ", reloadAll='" + reloadAll + '\'' +
+               ", joinMessage='" + joinMessage + '\'' +
+               '}';
+    }
 }

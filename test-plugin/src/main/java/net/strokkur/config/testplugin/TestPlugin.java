@@ -24,6 +24,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.strokkur.config.testplugin.config.messages.MessagesConfig;
 import net.strokkur.config.testplugin.config.messages.MessagesConfigImpl;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -83,6 +84,7 @@ public class TestPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        Bukkit.getPluginManager().registerEvents(this, this);
         this.getComponentLogger().info(messagesConfig.pluginStartup(MiniMessage.miniMessage()));
     }
 

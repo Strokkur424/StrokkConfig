@@ -173,7 +173,9 @@ public abstract class AbstractImplementationSourcePrinter extends AbstractShared
             if (model == null) {
                 // If the model is still null, throw an exception
                 throw new IOException("Failed to load configuration model for '" + path + "'.");
-            }""");
+            }
+            
+            System.out.println(model);""");
 
         for (ConfigSection section : model.getSections()) {
             String sectionClassName = section.getSectionName();

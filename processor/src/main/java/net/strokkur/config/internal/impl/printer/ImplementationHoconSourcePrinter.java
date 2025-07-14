@@ -50,15 +50,16 @@ public class ImplementationHoconSourcePrinter extends AbstractImplementationSour
                     .indent(2)
                     .build();
                 
-                CommentedConfigurationNode node = loader.createNode(ConfigurationOptions.defaults());
+                CommentedConfigurationNode node = loader.load(ConfigurationOptions.defaults());
                 model = node.get({}.class);
-                
-                if (model == null && !Files.exists(path)) {
-                    // If the file doesn't exist, even after an attempted copy, create it anew and save it to disk
+
+                if (!Files.exists(path)) {
+                    // If the file doesn't exist, create it
                     model = new {}();
                     node.set(model);
                     loader.save(node);
                 }""",
+            model.getMetadata().getOriginalClass(),
             model.getMetadata().getOriginalClass(),
             model.getMetadata().getOriginalClass()
         );
