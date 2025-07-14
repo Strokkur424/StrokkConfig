@@ -17,21 +17,85 @@
  */
 package net.strokkur.config.testplugin;
 
-import net.strokkur.config.testplugin.config.Reference$MyCoolConfig;
-import net.strokkur.config.testplugin.config.Reference$MyCoolConfigImpl;
-import org.bukkit.inventory.ItemStack;
+import com.mojang.brigadier.Command;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.strokkur.config.testplugin.config.messages.MessagesConfig;
+import net.strokkur.config.testplugin.config.messages.MessagesConfigImpl;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 
 @NullMarked
-public class TestPlugin extends JavaPlugin {
+public class TestPlugin extends JavaPlugin implements Listener {
 
-    public void reload() throws IOException {
-        Reference$MyCoolConfig config = new Reference$MyCoolConfigImpl();
-        config.reload(this);
+    @MonotonicNonNull
+    private MessagesConfig messagesConfig;
 
-        ItemStack stack = config.itemDefinition();
+    @Override
+    public void onLoad() {
+        messagesConfig = new MessagesConfigImpl();
+        try {
+            messagesConfig.reload(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(
+            event -> event.registrar().register(Commands.literal("test")
+                .then(Commands.literal("reload")
+                    .then(Commands.literal("all")
+                        .executes(ctx -> {
+                            try {
+                                messagesConfig.reload(this);
+                                ctx.getSource().getSender().sendMessage(messagesConfig.reloadAll(MiniMessage.miniMessage()));
+                            } catch (IOException ex) {
+                                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
+                                getComponentLogger().error("Failed to reload all configs", ex);
+                            }
+                            return Command.SINGLE_SUCCESS;
+                        })
+                    )
+                    .then(Commands.literal(MessagesConfig.FILE_PATH)
+                        .executes(ctx -> {
+                            try {
+                                messagesConfig.reload(this);
+                                ctx.getSource().getSender().sendMessage(messagesConfig.reload(MiniMessage.miniMessage()));
+                            } catch (IOException ex) {
+                                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
+                                getComponentLogger().error("Failed to reload all configs", ex);
+                            }
+                            return Command.SINGLE_SUCCESS;
+                        })
+                    )
+                )
+                .build()
+            )
+        ));
+    }
+
+    @Override
+    public void onEnable() {
+        this.getComponentLogger().info(messagesConfig.pluginStartup(MiniMessage.miniMessage()));
+    }
+
+    @Override
+    public void onDisable() {
+        this.getComponentLogger().info(messagesConfig.pluginShutdown(MiniMessage.miniMessage()));
+    }
+
+    @EventHandler
+    void onJoin(PlayerJoinEvent event) {
+        event.joinMessage(messagesConfig.joinMessage(
+            MiniMessage.miniMessage(),
+            Placeholder.component("player", event.getPlayer().displayName())
+        ));
     }
 }

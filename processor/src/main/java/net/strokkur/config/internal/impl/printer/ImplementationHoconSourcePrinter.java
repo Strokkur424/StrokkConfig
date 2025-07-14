@@ -34,13 +34,16 @@ public class ImplementationHoconSourcePrinter extends AbstractImplementationSour
                         .build();
             
             CommentedConfigurationNode node = loader.createNode(ConfigurationOptions.defaults());
-            model = node.get(MyCoolConfigModel.class);
+            model = node.get({}.class);
             
             if (model == null && !Files.exists(path)) {
                 // If the file doesn't exist, even after an attempted copy, create it anew and save it to disk
-                model = new MyCoolConfigModel();
+                model = new {}();
                 node.set(model);
                 loader.save(node);
-            }""");
+            }""",
+            model.getMetadata().getOriginalClass(),
+            model.getMetadata().getOriginalClass()
+            );
     }
 }
