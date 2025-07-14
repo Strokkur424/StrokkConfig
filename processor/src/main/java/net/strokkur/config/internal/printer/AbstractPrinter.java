@@ -67,25 +67,17 @@ public abstract class AbstractPrinter implements SourcePrinter {
         this.indentString = INDENTATION.repeat(this.indent);
     }
 
-
-    @Override
-    public SourcePrinter print(String message, Object... format) throws IOException {
-        if (writer == null) {
-            throw new IOException("No writer set.");
-        }
-
-        writer.append(message.replace("{}", "%s").formatted(format));
-        return this;
-    }
-
     @Override
     public SourcePrinter println(String message, Object... format) throws IOException {
         if (writer == null) {
             throw new IOException("No writer set.");
         }
-
-        writer.append(indentString);
-        writer.append(message.replace("{}", "%s").formatted(format));
+        
+        message = message.stripTrailing();
+        if (!message.isBlank()) {
+            writer.append(indentString);
+            writer.append(message.replace("{}", "%s").formatted(format));
+        }
         writer.append("\n");
         return this;
     }

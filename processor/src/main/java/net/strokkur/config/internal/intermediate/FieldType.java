@@ -17,10 +17,12 @@
  */
 package net.strokkur.config.internal.intermediate;
 
+import net.strokkur.config.internal.impl.fields.ArrayFieldType;
 import net.strokkur.config.internal.impl.fields.ObjectFieldType;
 import net.strokkur.config.internal.impl.fields.PrimitiveFieldType;
 import net.strokkur.config.internal.util.MessagerWrapper;
 
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
@@ -34,6 +36,10 @@ public interface FieldType {
     static FieldType ofTypeMirror(TypeMirror typeMirror, MessagerWrapper messager, Types typesUtil) {
         if (typeMirror.getKind().isPrimitive()) {
             return new PrimitiveFieldType(typeMirror.toString());
+        }
+        
+        if (typeMirror instanceof ArrayType array) {
+            return new ArrayFieldType(messager, array, typesUtil);
         }
 
         return new ObjectFieldType(messager, (DeclaredType) typeMirror, typesUtil);

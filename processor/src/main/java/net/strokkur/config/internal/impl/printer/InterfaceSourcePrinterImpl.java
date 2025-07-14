@@ -18,16 +18,16 @@
 package net.strokkur.config.internal.impl.printer;
 
 import net.strokkur.config.internal.BuildConstants;
+import net.strokkur.config.internal.impl.fields.ArrayFieldType;
 import net.strokkur.config.internal.intermediate.ConfigField;
 import net.strokkur.config.internal.intermediate.ConfigModel;
 import net.strokkur.config.internal.intermediate.ConfigSection;
+import net.strokkur.config.internal.intermediate.Parameter;
 import net.strokkur.config.internal.printer.AbstractPrinter;
 import net.strokkur.config.internal.printer.InterfaceSourcePrinter;
 import net.strokkur.config.internal.util.MessagerWrapper;
 import org.jspecify.annotations.Nullable;
 
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.io.Writer;
@@ -70,7 +70,6 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
         println();
 
         printAccessMethods();
-        println();
         printNestedInterfaces();
 
         decrementIndent();
@@ -83,12 +82,18 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
 
         model.getFields().forEach(field -> {
             imports.addAll(field.getFieldType().getImports());
-            for (VariableElement methodParam : field.getMethodParameters()) {
-//                imports.addAll(FieldType.ofTypeMirror(methodParam.asType(), messager, types).getImports());
+            for (Parameter methodParam : field.getMethodParameters()) {
+                imports.addAll(methodParam.getFieldType().getImports());
             }
         });
-        model.getSections().forEach(sec -> sec.getFields().forEach(field -> imports.addAll(field.getFieldType().getImports())));
-
+        model.getSections().forEach(sec -> sec.getFields().forEach(
+            field -> {
+                imports.addAll(field.getFieldType().getImports());
+                for (Parameter methodParam : field.getMethodParameters()) {
+                    imports.addAll(methodParam.getFieldType().getImports());
+                }
+            }
+        ));
 
         imports.removeIf(str -> str.startsWith(model.getMetadata().getPackage()));
         imports.removeIf(str -> str.startsWith("java.lang."));
@@ -196,6 +201,11 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
         println();
 
         for (ConfigField field : model.getFields()) {
+            if (field.isSectionAccessor()) {
+                // We handle those below
+                continue;
+            }
+
             printAccessMethod(field);
             println();
         }
@@ -207,10 +217,14 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
             //
             // Nested classes
             //
-            
             """);
+        println();
 
         for (ConfigSection section : model.getSections()) {
+            println("{} {}();",
+                section.getSectionName(),
+                section.getSectionName().substring(0, 1).toLowerCase() + section.getSectionName().substring(1)
+            );
             printSectionInterface(section);
         }
     }
@@ -221,19 +235,20 @@ public class InterfaceSourcePrinterImpl extends AbstractPrinter implements Inter
         String name = field.getFieldName();
 
         StringBuilder paramBuilder = new StringBuilder();
-        List<VariableElement> methodParameters = field.getMethodParameters();
+        List<Parameter> methodParameters = field.getMethodParameters();
         for (int i = 0; i < methodParameters.size(); i++) {
-            VariableElement param = methodParameters.get(i);
+            Parameter param = methodParameters.get(i);
 
-            if (i + 1 == methodParameters.size() && param.asType().getKind() == TypeKind.ARRAY) {
-                String typeName = param.asType().toString();
+            String fieldType = param.getFieldType().getSimpleNameParameterized();
+            String fieldName = param.getName();
 
-                paramBuilder.append(typeName, 0, typeName.length() - 2)
+            if (i + 1 == methodParameters.size() && param.getFieldType() instanceof ArrayFieldType) {
+                paramBuilder.append(fieldType, 0, fieldType.length() - 2)
                     .append("...")
                     .append(" ")
-                    .append(param);
+                    .append(param.getName());
             } else {
-                paramBuilder.append(param.asType().toString()).append(" ").append(param);
+                paramBuilder.append(fieldType).append(" ").append(fieldName);
             }
 
             if (i + 1 < methodParameters.size()) {

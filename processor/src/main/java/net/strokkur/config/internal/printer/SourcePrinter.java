@@ -34,7 +34,6 @@ public interface SourcePrinter {
     void incrementIndent();
     void decrementIndent();
 
-    SourcePrinter print(@Language("JAVA") String message, Object... format) throws IOException;
     SourcePrinter println(@Language("JAVA") String message, Object... format) throws IOException;
     SourcePrinter println() throws IOException;
 

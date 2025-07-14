@@ -21,7 +21,6 @@ import net.strokkur.config.internal.util.FieldNameContainer;
 import org.jspecify.annotations.Nullable;
 
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
 import java.util.List;
 
 /**
@@ -31,7 +30,7 @@ public interface ConfigField extends FieldNameContainer {
 
     FieldType getFieldType();
 
-    List<VariableElement> getMethodParameters();
+    List<Parameter> getMethodParameters();
 
     boolean isNullable();
 
@@ -45,7 +44,7 @@ public interface ConfigField extends FieldNameContainer {
     interface Builder {
         Builder setFieldType(FieldType fieldType);
         Builder setFieldName(String fieldName);
-        Builder addMethodParameter(VariableElement type);
+        Builder addMethodParameter(Parameter type);
         Builder setNullable(boolean value);
         Builder setCustomParseMethod(ExecutableElement customParseMethod);
         Builder setIsSectionAccessor(boolean value);

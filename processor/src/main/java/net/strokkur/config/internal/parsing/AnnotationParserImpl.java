@@ -20,12 +20,14 @@ package net.strokkur.config.internal.parsing;
 import net.strokkur.config.Format;
 import net.strokkur.config.annotations.ConfigFilePath;
 import net.strokkur.config.annotations.ConfigNullable;
+import net.strokkur.config.annotations.CustomParse;
 import net.strokkur.config.annotations.CustomType;
 import net.strokkur.config.annotations.CustomTypeReturn;
 import net.strokkur.config.annotations.GenerateConfig;
 import net.strokkur.config.internal.exceptions.ProcessorException;
 import net.strokkur.config.internal.impl.ConfigMetadataImpl;
 import net.strokkur.config.internal.impl.ConfigModelImpl;
+import net.strokkur.config.internal.impl.ParameterImpl;
 import net.strokkur.config.internal.impl.fields.ConfigFieldImpl;
 import net.strokkur.config.internal.impl.fields.ConfigSectionImpl;
 import net.strokkur.config.internal.impl.fields.CustomTypeImpl;
@@ -47,6 +49,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import java.util.List;
 
 public class AnnotationParserImpl implements AnnotationParser {
 
@@ -93,6 +96,19 @@ public class AnnotationParserImpl implements AnnotationParser {
             variable.getSimpleName().toString()
         );
 
+        CustomParse customParse = variable.getAnnotation(CustomParse.class);
+        if (customParse != null) {
+            for (Element enclosedElement : classElement.getEnclosedElements()) {
+                if (!(enclosedElement instanceof ExecutableElement methodElement)) {
+                    continue;
+                }
+
+                if (methodElement.getSimpleName().contentEquals(customParse.value())) {
+                    return populateCustomParseMethod(builder, methodElement, 1);
+                }
+            }
+        }
+
         if (!(variable.asType() instanceof DeclaredType declaredType)) {
             // Primitives will never have any custom implementations
             return builder.build();
@@ -109,15 +125,7 @@ public class AnnotationParserImpl implements AnnotationParser {
 
                 if (methodElement.getAnnotation(CustomTypeReturn.class) != null) {
                     // This is the custom method
-                    builder.setCustomParseMethod(methodElement);
-                    builder.setFieldType(FieldType.ofTypeMirror(methodElement.getReturnType(), messager, typesUtil));
-
-                    for (VariableElement parameter : methodElement.getParameters()) {
-                        builder.addMethodParameter(parameter);
-                    }
-                    builder.setIsVarArgs(methodElement.isVarArgs());
-
-                    return builder.build();
+                    return populateCustomParseMethod(builder, methodElement, 0);
                 }
             }
         }
@@ -136,35 +144,24 @@ public class AnnotationParserImpl implements AnnotationParser {
         }
 
         return builder.build();
-//        
-//        CustomParse customParse = variable.getAnnotation(CustomParse.class);
-//        ExecutableElement customParseElement = null;
-//        String customParseMethodName = customParse != null ? customParse.value() : "";
-//        
-//        boolean hasCustomType = false;
-//
-//        TypeMirror variableReturnType = variable.asType();
-//        if (variableReturnType instanceof DeclaredType declaredType) {
-//            TypeElement typeElement = (TypeElement) typesUtil.asElement(declaredType);
-//
-//            if (typeElement.getAnnotation(CustomType.class) != null) {
-//                // This is a custom type, so we should reflect that.
-//                hasCustomType = true;
-//                customParseMethodName = 
-//            }
-//        }
-//        
-//
-//        if (!customParseMethodName.isBlank()) {
-//            for (Element element : classElement.getEnclosedElements()) {
-//                if (element instanceof ExecutableElement method) {
-//                    if (method.getSimpleName().contentEquals(customParseMethodName)) {
-//                        customParseElement = method;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
+    }
+
+    @NonNull
+    private ConfigField populateCustomParseMethod(ConfigField.Builder builder, ExecutableElement methodElement, int firstParam) {
+        builder.setCustomParseMethod(methodElement);
+        builder.setFieldType(FieldType.ofTypeMirror(methodElement.getReturnType(), messager, typesUtil));
+
+        List<? extends VariableElement> parameters = methodElement.getParameters();
+        for (int i = firstParam; i < parameters.size(); i++) {
+            VariableElement parameter = parameters.get(i);
+            builder.addMethodParameter(new ParameterImpl(
+                FieldType.ofTypeMirror(parameter.asType(), messager, typesUtil),
+                parameter.getSimpleName().toString()
+            ));
+        }
+        
+        builder.setIsVarArgs(methodElement.isVarArgs());
+        return builder.build();
     }
 
     @Override

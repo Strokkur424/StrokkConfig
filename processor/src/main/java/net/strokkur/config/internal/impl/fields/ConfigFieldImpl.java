@@ -19,10 +19,10 @@ package net.strokkur.config.internal.impl.fields;
 
 import net.strokkur.config.internal.intermediate.ConfigField;
 import net.strokkur.config.internal.intermediate.FieldType;
+import net.strokkur.config.internal.intermediate.Parameter;
 import org.jspecify.annotations.Nullable;
 
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,12 +33,12 @@ public final class ConfigFieldImpl implements ConfigField {
     private final String fieldName;
     private final @Nullable ExecutableElement customParseMethod;
     private final boolean isNullable;
-    private final List<VariableElement> methodParameters;
+    private final List<Parameter> methodParameters;
     private final boolean isSectionAccessor;
     private final boolean isVarArgs;
 
     public ConfigFieldImpl(FieldType fieldType, String fieldName, @Nullable ExecutableElement customParseMethod, boolean isNullable,
-                           List<VariableElement> methodParameters, boolean isSectionAccessor, boolean isVarArgs) {
+                           List<Parameter> methodParameters, boolean isSectionAccessor, boolean isVarArgs) {
         this.fieldType = fieldType;
         this.fieldName = fieldName;
         this.customParseMethod = customParseMethod;
@@ -53,7 +53,7 @@ public final class ConfigFieldImpl implements ConfigField {
     }
 
     @Override
-    public List<VariableElement> getMethodParameters() {
+    public List<Parameter> getMethodParameters() {
         return Collections.unmodifiableList(methodParameters);
     }
 
@@ -88,7 +88,7 @@ public final class ConfigFieldImpl implements ConfigField {
     }
 
     private static class BuilderImpl implements Builder {
-        private final List<VariableElement> methodParameters = new ArrayList<>();
+        private final List<Parameter> methodParameters = new ArrayList<>();
         private FieldType fieldType;
         private String fieldName;
         private boolean nullable = false;
@@ -114,7 +114,7 @@ public final class ConfigFieldImpl implements ConfigField {
         }
 
         @Override
-        public Builder addMethodParameter(VariableElement type) {
+        public Builder addMethodParameter(Parameter type) {
             methodParameters.add(type);
             return this;
         }
