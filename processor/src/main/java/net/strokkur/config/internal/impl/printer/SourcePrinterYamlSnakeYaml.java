@@ -67,14 +67,14 @@ public class SourcePrinterYamlSnakeYaml extends AbstractImplementationSourcePrin
                 
                 if (!Files.exists(path)) {
                     // If the file doesn't exist, create it
-                    model = new MessagesConfigModel();
+                    model = new {}();
                     String yamlString = yaml.dumpAs(model, Tag.MAP, DumperOptions.FlowStyle.BLOCK);
                     Files.createDirectories(path.getParent());
                     Files.writeString(path, yamlString);
                 } else {
                     // If the file exists, load it
                     String yamlString = Files.readString(path);
-                    model = yaml.loadAs(yamlString, MessagesConfigModel.class);
+                    model = yaml.loadAs(yamlString, {}.class);
                 }""",
             model.getMetadata().getOriginalClass(),
             model.getMetadata().getOriginalClass()
