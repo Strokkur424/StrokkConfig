@@ -96,7 +96,7 @@ public interface ConfigFormat {
             return ".yaml";
         }
     }
-    
+
     class CustomFormat implements ConfigFormat {
 
         @Override

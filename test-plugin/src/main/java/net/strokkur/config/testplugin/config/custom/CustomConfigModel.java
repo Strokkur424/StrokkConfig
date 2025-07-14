@@ -1,3 +1,20 @@
+/*
+ * StrokkCommands - A super simple annotation based zero-shade Paper configuration library.
+ * Copyright (C) 2025 Strokkur24
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, see <https://www.gnu.org/licenses/>.
+ */
 package net.strokkur.config.testplugin.config.custom;
 
 import net.kyori.adventure.key.InvalidKeyException;
@@ -31,22 +48,6 @@ class CustomConfigModel {
     @CustomParse("parseItemType")
     public String andAMaterialForGoodMeasure = ItemType.FLINT_AND_STEEL.key().value();
 
-    public ItemType parseItemType(String typeString) {
-        Key key;
-        try {
-            key = Key.key(typeString);
-        } catch (InvalidKeyException keyFormatException) {
-            throw new IllegalStateException("The input string '" + typeString + "' is not a valid item type.");
-        }
-
-        ItemType type = Registry.ITEM.get(key);
-        if (type == null) {
-            throw new IllegalStateException("The input string '" + typeString + "' is not a valid item type.");
-        }
-
-        return type;
-    }
-
     @CustomSerializer
     static String serialize(CustomConfigModel model) throws IOException {
         Properties properties = new Properties(3);
@@ -71,5 +72,21 @@ class CustomConfigModel {
         model.andAMaterialForGoodMeasure = properties.getProperty("material", model.andAMaterialForGoodMeasure);
 
         return model;
+    }
+
+    public ItemType parseItemType(String typeString) {
+        Key key;
+        try {
+            key = Key.key(typeString);
+        } catch (InvalidKeyException keyFormatException) {
+            throw new IllegalStateException("The input string '" + typeString + "' is not a valid item type.");
+        }
+
+        ItemType type = Registry.ITEM.get(key);
+        if (type == null) {
+            throw new IllegalStateException("The input string '" + typeString + "' is not a valid item type.");
+        }
+
+        return type;
     }
 }

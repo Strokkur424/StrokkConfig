@@ -35,8 +35,9 @@ public interface ConfigMetadata {
     String getImplementationClass();
 
     ConfigFormat getFormat();
-    
-    @Nullable CustomSerializers getCustomSerializers();
+
+    @Nullable
+    CustomSerializers getCustomSerializers();
 
     boolean isDefaultNonNull();
 }

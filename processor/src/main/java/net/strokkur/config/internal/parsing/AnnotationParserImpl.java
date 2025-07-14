@@ -42,13 +42,11 @@ import net.strokkur.config.internal.intermediate.ConfigSection;
 import net.strokkur.config.internal.intermediate.CustomParseMethodType;
 import net.strokkur.config.internal.intermediate.CustomSerializers;
 import net.strokkur.config.internal.intermediate.FieldType;
-import net.strokkur.config.internal.intermediate.Parameter;
 import net.strokkur.config.internal.util.MessagerWrapper;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullUnmarked;
 
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
@@ -235,12 +233,12 @@ public class AnnotationParserImpl implements AnnotationParser {
                 if (!(element instanceof ExecutableElement methodElement) || !methodElement.getModifiers().contains(Modifier.STATIC)) {
                     continue;
                 }
-                
+
                 if (methodElement.getAnnotation(CustomSerializer.class) != null) {
                     if (serializerMethod != null) {
                         throw new ProcessorException("Duplicate declaration of serializer method", methodElement);
                     }
-                    
+
                     if (!Objects.equals(methodElement.getReturnType(), elementUtils.getTypeElement("java.lang.String").asType())) {
                         throw new ProcessorException("Invalid return type for serializer method. Must be java.lang.String", methodElement);
                     }
@@ -249,15 +247,15 @@ public class AnnotationParserImpl implements AnnotationParser {
                     if (params.size() != 1) {
                         throw new ProcessorException("Invalid number of parameters for serializer method. Must contain only one", methodElement);
                     }
-                    
+
                     if (!Objects.equals(params.getFirst().asType(), classElement.asType())) {
                         throw new ProcessorException("Invalid parameters for serializer method. Must be " + classElement.getQualifiedName().toString(), params.getFirst());
                     }
-                    
+
                     serializerMethod = methodElement;
                     continue;
                 }
-                
+
                 if (methodElement.getAnnotation(CustomDeserializer.class) != null) {
                     if (deserializerMethod != null) {
                         throw new ProcessorException("Duplicate declaration of deserializer method", methodElement);
@@ -275,15 +273,15 @@ public class AnnotationParserImpl implements AnnotationParser {
                     if (!Objects.equals(params.getFirst().asType(), elementUtils.getTypeElement("java.lang.String").asType())) {
                         throw new ProcessorException("Invalid parameters for deserializer method. Must be java.lang.String", params.getFirst());
                     }
-                    
+
                     deserializerMethod = methodElement;
                 }
             }
-            
+
             if (serializerMethod == null || deserializerMethod == null) {
                 throw new ProcessorException("A class with a custom format must include static methods annotated with @CustomSerializer and @CustomDeserializer!", classElement);
             }
-            
+
             customSerializers = new CustomSerializersImpl(serializerMethod, deserializerMethod);
         }
 

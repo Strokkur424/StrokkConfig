@@ -30,11 +30,11 @@ jobs:
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
-        
+  
   release:
     name: Release
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - build
     
     permissions:
@@ -42,13 +42,13 @@ jobs:
       issues: write # to be able to comment on released issues
       pull-requests: write # to be able to comment on released pull requests
       id-token: write # to enable use of OIDC for npm provenance
-      
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -65,13 +65,13 @@ jobs:
 
       - name: Grant execution rights to Gradle Wrapper
         run: chmod +x ./gradlew
-          
+
       - name: Install dependencies
         run: npm clean-install
-        
+
       - name: Verify signatures
         run: npm audit signatures
-        
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

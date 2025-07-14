@@ -64,20 +64,20 @@ public enum Format {
      * @ConfigModel
      * @ConfigFormat(Format.CUSTOM)
      * class ConfigModel {
-     *     
+     *
      *     public String someValue = "hey there!";
-     *     
+     *
      *     @CustomSerializer
      *     static String serialize(ConfigModel model) {
      *         return someValue;
      *     }
-     *     
+     *
      *     @CustomDeserializer
      *     static ConfigModel deserialize(String serialized) {
      *         ConfigModel model = new ConfigModel();
      *         model.someValue = serialized;
      *         return model;
-     *     } 
+     *     }
      * }
      * }</pre>
      */
