@@ -1,5 +1,5 @@
 /*
- * StrokkCommands - A super simple annotation based zero-shade Paper command API library.
+ * StrokkCommands - A super simple annotation based zero-shade Paper configuration library.
  * Copyright (C) 2025 Strokkur24
  *
  * This library is free software; you can redistribute it and/or
