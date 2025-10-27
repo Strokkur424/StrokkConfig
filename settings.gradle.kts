@@ -1,13 +1,16 @@
 pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        maven("https://eldonexus.de/repository/maven-public/")
-    }
+  repositories {
+    gradlePluginPortal()
+    maven("https://eldonexus.de/repository/maven-public/")
+  }
 }
 
 rootProject.name = "StrokkConfig"
 
-sequenceOf("annotations", "processor", "test-plugin").forEach {
-    include("strokk-config-$it")
-    project(":strokk-config-$it").projectDir = rootDir.resolve(it)
+sequenceOf("annotations", "processor").forEach {
+  include(it)
+}
+
+if (System.getenv("SKIP_TEST") != "true") {
+  include("test-plugin")
 }

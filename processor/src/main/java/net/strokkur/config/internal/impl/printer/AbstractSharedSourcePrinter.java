@@ -35,102 +35,102 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractSharedSourcePrinter extends AbstractPrinter implements SharedSourcePrinter {
 
-    protected final ConfigModel model;
-    protected final MessagerWrapper messager;
+  protected final ConfigModel model;
+  protected final MessagerWrapper messager;
 
-    public AbstractSharedSourcePrinter(@Nullable Writer writer, ConfigModel model, MessagerWrapper messager) {
-        super(writer);
-        this.model = model;
-        this.messager = messager;
-    }
+  public AbstractSharedSourcePrinter(@Nullable Writer writer, ConfigModel model, MessagerWrapper messager) {
+    super(writer);
+    this.model = model;
+    this.messager = messager;
+  }
 
-    protected abstract String getJavaDocInfo();
+  protected abstract String getJavaDocInfo();
 
-    protected abstract String seeOther();
+  protected abstract String seeOther();
 
-    protected abstract String classType();
+  protected abstract String classType();
 
-    protected abstract String className();
+  protected abstract String className();
 
-    protected String getOopPart() {
-        return "";
-    }
+  protected String getOopPart() {
+    return "";
+  }
 
-    @Override
-    public void printClassJavaDoc() throws IOException {
-        printBlock("""
-                /**
-                 * {}
-                 *
-                 * @author Strokkur24 - StrokkConfig
-                 * @version {}
-                 * @see {}
-                 * @see {}
-                 */""",
-            getJavaDocInfo(),
-            BuildConstants.VERSION,
-            model.getMetadata().getOriginalClass(),
-            seeOther()
-        );
-    }
+  @Override
+  public void printClassJavaDoc() throws IOException {
+    printBlock("""
+            /**
+             * {}
+             *
+             * @author Strokkur24 - StrokkConfig
+             * @version {}
+             * @see {}
+             * @see {}
+             */""",
+        getJavaDocInfo(),
+        BuildConstants.VERSION,
+        model.getMetadata().getOriginalClass(),
+        seeOther()
+    );
+  }
 
-    @Override
-    public void printClassDeclaration() throws IOException {
-        printBlock("""
-                @NullMarked
-                public {} {}{} {""",
-            classType(),
-            className(),
-            getOopPart()
-        );
-    }
+  @Override
+  public void printClassDeclaration() throws IOException {
+    printBlock("""
+            @NullMarked
+            public {} {}{} {""",
+        classType(),
+        className(),
+        getOopPart()
+    );
+  }
 
-    @Override
-    public Set<String> getAllImports() {
-        Set<String> imports = new HashSet<>(getStandardImports());
+  @Override
+  public Set<String> getAllImports() {
+    Set<String> imports = new HashSet<>(getStandardImports());
 
-        model.getFields().forEach(field -> {
-            imports.addAll(field.getFieldType().getImports());
-            for (Parameter methodParam : field.getMethodParameters()) {
-                imports.addAll(methodParam.getFieldType().getImports());
-            }
-        });
-        model.getSections().forEach(sec -> sec.getFields().forEach(
-            field -> {
-                imports.addAll(field.getFieldType().getImports());
-                for (Parameter methodParam : field.getMethodParameters()) {
-                    imports.addAll(methodParam.getFieldType().getImports());
-                }
-            }
-        ));
-
-        imports.removeIf(str -> str.startsWith(model.getMetadata().getPackage()));
-        imports.removeIf(str -> str.startsWith("java.lang."));
-        return imports;
-    }
-
-    @Override
-    public void printPackage() throws IOException {
-        println("package {};", model.getMetadata().getPackage());
-    }
-
-    @Override
-    public void printImports() throws IOException {
-        Map<Boolean, List<String>> splitImports = getAllImports().stream()
-            .sorted()
-            .collect(Collectors.partitioningBy(str -> str.startsWith("java")));
-
-        List<String> javaImports = splitImports.get(true);
-        List<String> otherImports = splitImports.get(false);
-
-        for (String i : otherImports) {
-            println("import {};", i);
+    model.getFields().forEach(field -> {
+      imports.addAll(field.getFieldType().getImports());
+      for (Parameter methodParam : field.getMethodParameters()) {
+        imports.addAll(methodParam.getFieldType().getImports());
+      }
+    });
+    model.getSections().forEach(sec -> sec.getFields().forEach(
+        field -> {
+          imports.addAll(field.getFieldType().getImports());
+          for (Parameter methodParam : field.getMethodParameters()) {
+            imports.addAll(methodParam.getFieldType().getImports());
+          }
         }
+    ));
 
-        println();
+    imports.removeIf(str -> str.startsWith(model.getMetadata().getPackage()));
+    imports.removeIf(str -> str.startsWith("java.lang."));
+    return imports;
+  }
 
-        for (String i : javaImports) {
-            println("import {};", i);
-        }
+  @Override
+  public void printPackage() throws IOException {
+    println("package {};", model.getMetadata().getPackage());
+  }
+
+  @Override
+  public void printImports() throws IOException {
+    Map<Boolean, List<String>> splitImports = getAllImports().stream()
+        .sorted()
+        .collect(Collectors.partitioningBy(str -> str.startsWith("java")));
+
+    List<String> javaImports = splitImports.get(true);
+    List<String> otherImports = splitImports.get(false);
+
+    for (String i : otherImports) {
+      println("import {};", i);
     }
+
+    println();
+
+    for (String i : javaImports) {
+      println("import {};", i);
+    }
+  }
 }

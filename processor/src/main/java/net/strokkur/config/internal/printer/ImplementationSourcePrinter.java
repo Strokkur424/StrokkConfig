@@ -22,29 +22,32 @@ import java.util.Set;
 
 public interface ImplementationSourcePrinter extends SharedSourcePrinter {
 
-    Set<String> STANDARD_IMPL_IMPORTS = Set.of(
-        "org.bukkit.plugin.java.JavaPlugin",
-        "org.jspecify.annotations.NullMarked",
-        "org.jspecify.annotations.Nullable",
-        "java.io.IOException",
-        "java.nio.file.Files",
-        "java.nio.file.Path",
-        "java.util.Collections",
-        "java.util.List",
-        "java.util.function.Function"
-    );
+  Set<String> STANDARD_IMPL_IMPORTS = Set.of(
+      "org.bukkit.plugin.java.JavaPlugin",
+      "org.jspecify.annotations.NullMarked",
+      "org.jspecify.annotations.Nullable",
+      "java.io.IOException",
+      "java.nio.file.Files",
+      "java.nio.file.Path",
+      "java.util.Collections",
+      "java.util.List",
+      "java.util.function.Function"
+  );
 
-    @Override
-    default Set<String> getStandardImports() {
-        return STANDARD_IMPL_IMPORTS;
-    }
+  @Override
+  default Set<String> getStandardImports() {
+    return STANDARD_IMPL_IMPORTS;
+  }
 
-    void printModelVariable() throws IOException;
-    void printNestedSectionsVariables() throws IOException;
+  void printModelVariable() throws IOException;
 
-    void printReloadMethodImplementation() throws IOException;
+  void printNestedSectionsVariables() throws IOException;
 
-    void printAccessMethods() throws IOException;
-    void printUtilityMethods() throws IOException;
-    void printNestedClasses() throws IOException;
+  void printReloadMethodImplementation() throws IOException;
+
+  void printAccessMethods() throws IOException;
+
+  void printUtilityMethods() throws IOException;
+
+  void printNestedClasses() throws IOException;
 }

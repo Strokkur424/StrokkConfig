@@ -42,122 +42,122 @@ import java.io.IOException;
 @NullMarked
 public class TestPlugin extends JavaPlugin implements Listener {
 
-    @MonotonicNonNull
-    private MessagesConfig messagesConfig;
+  @MonotonicNonNull
+  private MessagesConfig messagesConfig;
 
-    @MonotonicNonNull
-    private MyCoolConfig coolConfig;
+  @MonotonicNonNull
+  private MyCoolConfig coolConfig;
 
-    @MonotonicNonNull
-    private CustomConfig customConfig;
+  @MonotonicNonNull
+  private CustomConfig customConfig;
 
-    @Override
-    public void onLoad() {
-        messagesConfig = new MessagesConfigImpl();
-        coolConfig = new MyCoolConfigImpl();
-        customConfig = new CustomConfigImpl();
-        try {
-            messagesConfig.reload(this);
-            coolConfig.reload(this);
-            customConfig.reload(this);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(
-            event -> event.registrar().register(Commands.literal("test")
-                .then(Commands.literal("reload")
-                    .then(Commands.literal("all")
-                        .executes(ctx -> {
-                            try {
-                                messagesConfig.reload(this);
-                                coolConfig.reload(this);
-                                customConfig.reload(this);
-                                ctx.getSource().getSender().sendMessage(messagesConfig.reloadAll(MiniMessage.miniMessage()));
-                            } catch (IOException ex) {
-                                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
-                                getComponentLogger().error("Failed to reload all configs", ex);
-                            }
-                            return Command.SINGLE_SUCCESS;
-                        })
-                    )
-                    .then(Commands.literal(MessagesConfig.FILE_PATH)
-                        .executes(ctx -> {
-                            try {
-                                messagesConfig.reload(this);
-                                ctx.getSource().getSender().sendMessage(messagesConfig.reload(
-                                    MiniMessage.miniMessage(),
-                                    Placeholder.unparsed("config", MessagesConfig.FILE_PATH)
-                                ));
-                            } catch (IOException ex) {
-                                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
-                                getComponentLogger().error("Failed to reload all configs", ex);
-                            }
-                            return Command.SINGLE_SUCCESS;
-                        })
-                    )
-                    .then(Commands.literal(MyCoolConfig.FILE_PATH)
-                        .executes(ctx -> {
-                            try {
-                                coolConfig.reload(this);
-                                ctx.getSource().getSender().sendMessage(messagesConfig.reload(
-                                    MiniMessage.miniMessage(),
-                                    Placeholder.unparsed("config", MyCoolConfig.FILE_PATH)
-                                ));
-                            } catch (IOException ex) {
-                                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
-                                getComponentLogger().error("Failed to reload all configs", ex);
-                            }
-                            return Command.SINGLE_SUCCESS;
-                        })
-                    )
-                    .then(Commands.literal(CustomConfig.FILE_PATH)
-                        .executes(ctx -> {
-                            try {
-                                customConfig.reload(this);
-                                ctx.getSource().getSender().sendMessage(messagesConfig.reload(
-                                    MiniMessage.miniMessage(),
-                                    Placeholder.unparsed("config", CustomConfig.FILE_PATH)
-                                ));
-                            } catch (IOException ex) {
-                                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
-                                getComponentLogger().error("Failed to reload all configs", ex);
-                            }
-                            return Command.SINGLE_SUCCESS;
-                        })
-                    )
-                )
-                .then(Commands.literal("give-custom-item")
-                    .executes(ctx -> {
-                        if (!(ctx.getSource().getExecutor() instanceof Player player)) {
-                            return 0;
-                        }
-
-                        player.give(customConfig.andAMaterialForGoodMeasure().createItemStack());
-                        return Command.SINGLE_SUCCESS;
-                    })
-                )
-                .build()
-            )
-        ));
+  @Override
+  public void onLoad() {
+    messagesConfig = new MessagesConfigImpl();
+    coolConfig = new MyCoolConfigImpl();
+    customConfig = new CustomConfigImpl();
+    try {
+      messagesConfig.reload(this);
+      coolConfig.reload(this);
+      customConfig.reload(this);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
 
-    @Override
-    public void onEnable() {
-        Bukkit.getPluginManager().registerEvents(this, this);
-        this.getComponentLogger().info(messagesConfig.pluginStartup(MiniMessage.miniMessage()));
-    }
+    this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(
+      event -> event.registrar().register(Commands.literal("test")
+        .then(Commands.literal("reload")
+          .then(Commands.literal("all")
+            .executes(ctx -> {
+              try {
+                messagesConfig.reload(this);
+                coolConfig.reload(this);
+                customConfig.reload(this);
+                ctx.getSource().getSender().sendMessage(messagesConfig.reloadAll(MiniMessage.miniMessage()));
+              } catch (IOException ex) {
+                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
+                getComponentLogger().error("Failed to reload all configs", ex);
+              }
+              return Command.SINGLE_SUCCESS;
+            })
+          )
+          .then(Commands.literal(MessagesConfig.FILE_PATH)
+            .executes(ctx -> {
+              try {
+                messagesConfig.reload(this);
+                ctx.getSource().getSender().sendMessage(messagesConfig.reload(
+                  MiniMessage.miniMessage(),
+                  Placeholder.unparsed("config", MessagesConfig.FILE_PATH)
+                ));
+              } catch (IOException ex) {
+                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
+                getComponentLogger().error("Failed to reload all configs", ex);
+              }
+              return Command.SINGLE_SUCCESS;
+            })
+          )
+          .then(Commands.literal(MyCoolConfig.FILE_PATH)
+            .executes(ctx -> {
+              try {
+                coolConfig.reload(this);
+                ctx.getSource().getSender().sendMessage(messagesConfig.reload(
+                  MiniMessage.miniMessage(),
+                  Placeholder.unparsed("config", MyCoolConfig.FILE_PATH)
+                ));
+              } catch (IOException ex) {
+                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
+                getComponentLogger().error("Failed to reload all configs", ex);
+              }
+              return Command.SINGLE_SUCCESS;
+            })
+          )
+          .then(Commands.literal(CustomConfig.FILE_PATH)
+            .executes(ctx -> {
+              try {
+                customConfig.reload(this);
+                ctx.getSource().getSender().sendMessage(messagesConfig.reload(
+                  MiniMessage.miniMessage(),
+                  Placeholder.unparsed("config", CustomConfig.FILE_PATH)
+                ));
+              } catch (IOException ex) {
+                ctx.getSource().getSender().sendRichMessage("<red>An exception occurred. See the console for details.");
+                getComponentLogger().error("Failed to reload all configs", ex);
+              }
+              return Command.SINGLE_SUCCESS;
+            })
+          )
+        )
+        .then(Commands.literal("give-custom-item")
+          .executes(ctx -> {
+            if (!(ctx.getSource().getExecutor() instanceof Player player)) {
+              return 0;
+            }
 
-    @Override
-    public void onDisable() {
-        this.getComponentLogger().info(messagesConfig.pluginShutdown(MiniMessage.miniMessage()));
-    }
+            player.give(customConfig.andAMaterialForGoodMeasure().createItemStack());
+            return Command.SINGLE_SUCCESS;
+          })
+        )
+        .build()
+      )
+    ));
+  }
 
-    @EventHandler
-    void onJoin(PlayerJoinEvent event) {
-        event.joinMessage(messagesConfig.joinMessage(
-            MiniMessage.miniMessage(),
-            Placeholder.component("player", event.getPlayer().displayName())
-        ));
-    }
+  @Override
+  public void onEnable() {
+    Bukkit.getPluginManager().registerEvents(this, this);
+    this.getComponentLogger().info(messagesConfig.pluginStartup(MiniMessage.miniMessage()));
+  }
+
+  @Override
+  public void onDisable() {
+    this.getComponentLogger().info(messagesConfig.pluginShutdown(MiniMessage.miniMessage()));
+  }
+
+  @EventHandler
+  void onJoin(PlayerJoinEvent event) {
+    event.joinMessage(messagesConfig.joinMessage(
+      MiniMessage.miniMessage(),
+      Placeholder.component("player", event.getPlayer().displayName())
+    ));
+  }
 }

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
-package net.strokkur.config.annotations;
+package net.strokkur.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,9 +23,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation given to (sub)classes which should not be treated as separate config
- * sections, but custom types.
+ * Annotation given to a deserialization method for a {@link ConfigFormat.Format#CUSTOM} format.
+ * <p>
+ * The annotated method must be at least package-private and the first parameter
+ * should be a {@link String} for accepting the serialized content. The method
+ * should return the type of the config model class.
+ * <p>
+ * Example method:
+ * <pre>{@code
+ * @CustomDeserializer
+ * static ConfigModel deserialize(String serialized) throws IOException {
+ *     ConfigModel model = new ConfigModel();
+ *     model.someValue = serialized;
+ *     return model;
+ * }
+ * }</pre>
  */
 @Retention(RetentionPolicy.SOURCE)
-@Target(ElementType.TYPE)
-public @interface CustomType {}
+@Target(ElementType.METHOD)
+public @interface CustomDeserializer {}

@@ -24,11 +24,11 @@ import java.util.List;
  */
 public interface ConfigSection {
 
-    String getSectionName();
+  String getSectionName();
 
-    boolean isDefaultNonNull();
+  boolean isDefaultNonNull();
 
-    void addField(ConfigField field);
+  void addField(ConfigField field);
 
-    List<ConfigField> getFields();
+  List<ConfigField> getFields();
 }

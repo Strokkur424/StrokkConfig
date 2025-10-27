@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
-package net.strokkur.config.annotations;
+package net.strokkur.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,14 +23,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for declaring the target source file path.
+ * An annotation given to (sub)classes which should not be treated as separate config
+ * sections, but custom types.
  */
-@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
-public @interface ConfigFilePath {
-
-    /**
-     * The path to the config file.
-     */
-    String value();
-}
+@Target(ElementType.TYPE)
+public @interface CustomType {}

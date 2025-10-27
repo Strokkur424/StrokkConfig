@@ -25,20 +25,26 @@ import java.io.Writer;
 
 public interface SourcePrinter {
 
-    String INDENTATION = "\s\s\s\s";
+  String INDENTATION = "\s\s\s\s";
 
-    void print() throws IOException;
-    @Nullable
-    Writer getWriter();
-    void setWriter(@Nullable Writer writer);
-    void incrementIndent();
-    void decrementIndent();
+  void print() throws IOException;
 
-    SourcePrinter println(@Language("JAVA") String message, Object... format) throws IOException;
-    SourcePrinter println() throws IOException;
+  @Nullable
+  Writer getWriter();
 
-    SourcePrinter printBlock(@Language("JAVA") String block, Object... format) throws IOException;
-    default SourcePrinter printBlockNoJava(String block, Object... format) throws IOException {
-        return printBlock(block, format);
-    }
+  void setWriter(@Nullable Writer writer);
+
+  void incrementIndent();
+
+  void decrementIndent();
+
+  SourcePrinter println(@Language("JAVA") String message, Object... format) throws IOException;
+
+  SourcePrinter println() throws IOException;
+
+  SourcePrinter printBlock(@Language("JAVA") String block, Object... format) throws IOException;
+
+  default SourcePrinter printBlockNoJava(String block, Object... format) throws IOException {
+    return printBlock(block, format);
+  }
 }

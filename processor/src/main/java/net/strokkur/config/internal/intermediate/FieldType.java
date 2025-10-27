@@ -33,18 +33,21 @@ import java.util.Set;
  */
 public interface FieldType {
 
-    static FieldType ofTypeMirror(TypeMirror typeMirror, MessagerWrapper messager, Types typesUtil) {
-        if (typeMirror.getKind().isPrimitive()) {
-            return new PrimitiveFieldType(typeMirror.toString());
-        }
-
-        if (typeMirror instanceof ArrayType array) {
-            return new ArrayFieldType(messager, array, typesUtil);
-        }
-
-        return new ObjectFieldType(messager, (DeclaredType) typeMirror, typesUtil);
+  static FieldType ofTypeMirror(TypeMirror typeMirror, MessagerWrapper messager, Types typesUtil) {
+    if (typeMirror.getKind().isPrimitive()) {
+      return new PrimitiveFieldType(typeMirror.toString());
     }
-    String getFullyQualifiedName();
-    String getSimpleNameParameterized();
-    Set<String> getImports();
+
+    if (typeMirror instanceof ArrayType array) {
+      return new ArrayFieldType(messager, array, typesUtil);
+    }
+
+    return new ObjectFieldType(messager, (DeclaredType) typeMirror, typesUtil);
+  }
+
+  String getFullyQualifiedName();
+
+  String getSimpleNameParameterized();
+
+  Set<String> getImports();
 }

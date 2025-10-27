@@ -28,34 +28,34 @@ import java.util.List;
 
 public class CustomTypeImpl implements CustomType {
 
-    private final List<ConfigField> fields = new ArrayList<>();
-    private @Nullable ExecutableElement returnElement = null;
-    private boolean nonNull = true;
+  private final List<ConfigField> fields = new ArrayList<>();
+  private @Nullable ExecutableElement returnElement = null;
+  private boolean nonNull = true;
 
-    public void setReturnElement(ExecutableElement element) {
-        this.returnElement = element;
-    }
+  public void setReturnElement(ExecutableElement element) {
+    this.returnElement = element;
+  }
 
-    public void addConfigField(ConfigField field) {
-        fields.add(field);
-    }
+  public void addConfigField(ConfigField field) {
+    fields.add(field);
+  }
 
-    @Override
-    public boolean isDefaultNonNull() {
-        return nonNull;
-    }
+  @Override
+  public boolean isDefaultNonNull() {
+    return nonNull;
+  }
 
-    public void setDefaultNonNull(boolean value) {
-        this.nonNull = value;
-    }
+  public void setDefaultNonNull(boolean value) {
+    this.nonNull = value;
+  }
 
-    @Override
-    public List<ConfigField> getFields() {
-        return Collections.unmodifiableList(fields);
-    }
+  @Override
+  public List<ConfigField> getFields() {
+    return Collections.unmodifiableList(fields);
+  }
 
-    @Override
-    public @Nullable ExecutableElement getTypeReturn() {
-        return returnElement;
-    }
+  @Override
+  public @Nullable ExecutableElement getTypeReturn() {
+    return returnElement;
+  }
 }

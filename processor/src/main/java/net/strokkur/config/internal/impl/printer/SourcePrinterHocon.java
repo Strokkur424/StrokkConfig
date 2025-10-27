@@ -27,41 +27,41 @@ import java.util.Set;
 
 public class SourcePrinterHocon extends AbstractImplementationSourcePrinter {
 
-    public SourcePrinterHocon(@Nullable Writer writer, ConfigModel model, MessagerWrapper messager) {
-        super(writer, model, messager);
-    }
+  public SourcePrinterHocon(@Nullable Writer writer, ConfigModel model, MessagerWrapper messager) {
+    super(writer, model, messager);
+  }
 
-    @Override
-    protected Set<String> getImplementationImports() {
-        return Set.of(
-            "org.spongepowered.configurate.CommentedConfigurationNode",
-            "org.spongepowered.configurate.ConfigurationOptions",
-            "org.spongepowered.configurate.hocon.HoconConfigurationLoader"
-        );
-    }
+  @Override
+  protected Set<String> getImplementationImports() {
+    return Set.of(
+        "org.spongepowered.configurate.CommentedConfigurationNode",
+        "org.spongepowered.configurate.ConfigurationOptions",
+        "org.spongepowered.configurate.hocon.HoconConfigurationLoader"
+    );
+  }
 
-    @Override
-    protected void printImplementationDependantReloadImpl() throws IOException {
-        printBlock("""
-                HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
-                    .path(path)
-                    .emitComments(true)
-                    .prettyPrinting(true)
-                    .indent(2)
-                    .build();
-                
-                CommentedConfigurationNode node = loader.load(ConfigurationOptions.defaults());
-                model = node.get({}.class);
-                
-                if (!Files.exists(path)) {
-                    // If the file doesn't exist, create it
-                    model = new {}();
-                    node.set(model);
-                    loader.save(node);
-                }""",
-            model.getMetadata().getOriginalClass(),
-            model.getMetadata().getOriginalClass(),
-            model.getMetadata().getOriginalClass()
-        );
-    }
+  @Override
+  protected void printImplementationDependantReloadImpl() throws IOException {
+    printBlock("""
+            HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
+                .path(path)
+                .emitComments(true)
+                .prettyPrinting(true)
+                .indent(2)
+                .build();
+            
+            CommentedConfigurationNode node = loader.load(ConfigurationOptions.defaults());
+            model = node.get({}.class);
+            
+            if (!Files.exists(path)) {
+                // If the file doesn't exist, create it
+                model = new {}();
+                node.set(model);
+                loader.save(node);
+            }""",
+        model.getMetadata().getOriginalClass(),
+        model.getMetadata().getOriginalClass(),
+        model.getMetadata().getOriginalClass()
+    );
+  }
 }

@@ -17,15 +17,14 @@
  */
 package net.strokkur.config.internal.parsing;
 
-import net.strokkur.config.Format;
-import net.strokkur.config.annotations.ConfigFilePath;
-import net.strokkur.config.annotations.ConfigNullable;
-import net.strokkur.config.annotations.CustomDeserializer;
-import net.strokkur.config.annotations.CustomParse;
-import net.strokkur.config.annotations.CustomSerializer;
-import net.strokkur.config.annotations.CustomType;
-import net.strokkur.config.annotations.CustomTypeReturn;
-import net.strokkur.config.annotations.GenerateConfig;
+import net.strokkur.config.ConfigFilePath;
+import net.strokkur.config.ConfigNullable;
+import net.strokkur.config.CustomDeserializer;
+import net.strokkur.config.CustomParse;
+import net.strokkur.config.CustomSerializer;
+import net.strokkur.config.CustomType;
+import net.strokkur.config.CustomTypeReturn;
+import net.strokkur.config.GenerateConfig;
 import net.strokkur.config.internal.exceptions.ProcessorException;
 import net.strokkur.config.internal.impl.ConfigMetadataImpl;
 import net.strokkur.config.internal.impl.ConfigModelImpl;
@@ -60,246 +59,246 @@ import java.util.Objects;
 
 public class AnnotationParserImpl implements AnnotationParser {
 
-    private final MessagerWrapper messager;
-    private final Elements elementUtils;
-    private final Types typesUtil;
+  private final MessagerWrapper messager;
+  private final Elements elementUtils;
+  private final Types typesUtil;
 
-    public AnnotationParserImpl(MessagerWrapper messager, Elements elementUtils, Types typesUtil) {
-        this.messager = messager;
-        this.elementUtils = elementUtils;
-        this.typesUtil = typesUtil;
-    }
+  public AnnotationParserImpl(MessagerWrapper messager, Elements elementUtils, Types typesUtil) {
+    this.messager = messager;
+    this.elementUtils = elementUtils;
+    this.typesUtil = typesUtil;
+  }
 
-    @Override
-    @NullUnmarked
-    public @NonNull ConfigModel parseClass(@NonNull TypeElement classElement) throws ProcessorException {
-        ConfigMetadata metadata = getMetadata(classElement);
-        ConfigModel.Builder builder = ConfigModelImpl.builder(metadata);
+  @Override
+  @NullUnmarked
+  public @NonNull ConfigModel parseClass(@NonNull TypeElement classElement) throws ProcessorException {
+    ConfigMetadata metadata = getMetadata(classElement);
+    ConfigModel.Builder builder = ConfigModelImpl.builder(metadata);
 
-        for (Element element : classElement.getEnclosedElements()) {
-            if (element instanceof TypeElement typeElement) {
-                if (element.getAnnotation(CustomType.class) != null) {
-                    builder.addCustomType(parseCustomType(typeElement));
-                    continue;
-                }
-
-                builder.addSection(parseConfigSection(typeElement));
-                continue;
-            }
-
-            if (element instanceof VariableElement variable) {
-                builder.addField(parseField(classElement, variable));
-            }
-        }
-
-        return builder.build();
-    }
-
-    @Override
-    @NullUnmarked
-    public @NonNull ConfigField parseField(@NonNull TypeElement classElement, @NonNull VariableElement variable) throws ProcessorException {
-        ConfigField.Builder builder = ConfigFieldImpl.builder(
-            FieldType.ofTypeMirror(variable.asType(), messager, typesUtil),
-            variable.getSimpleName().toString()
-        );
-
-        CustomParse customParse = variable.getAnnotation(CustomParse.class);
-        if (customParse != null) {
-            for (Element enclosedElement : classElement.getEnclosedElements()) {
-                if (!(enclosedElement instanceof ExecutableElement methodElement)) {
-                    continue;
-                }
-
-                if (methodElement.getSimpleName().contentEquals(customParse.value())) {
-                    return populateCustomParseMethod(builder, methodElement, 1, CustomParseMethodType.CUSTOM_PARSE);
-                }
-            }
-        }
-
-        if (!(variable.asType() instanceof DeclaredType declaredType)) {
-            // Primitives will never have any custom implementations
-            return builder.build();
-        }
-
-        Element element = declaredType.asElement();
-
-        // Check if the class is a custom type
+    for (Element element : classElement.getEnclosedElements()) {
+      if (element instanceof TypeElement typeElement) {
         if (element.getAnnotation(CustomType.class) != null) {
-            for (Element subElement : element.getEnclosedElements()) {
-                if (!(subElement instanceof ExecutableElement methodElement)) {
-                    continue;
-                }
-
-                if (methodElement.getAnnotation(CustomTypeReturn.class) != null) {
-                    // This is the custom method
-                    return populateCustomParseMethod(builder, methodElement, 0, CustomParseMethodType.CUSTOM_TYPE);
-                }
-            }
+          builder.addCustomType(parseCustomType(typeElement));
+          continue;
         }
 
-        // Check if the class is an inner class of the config class --> section
-        for (Element subElement : classElement.getEnclosedElements()) {
-            if (!(subElement instanceof TypeElement innerClassElement)) {
-                continue;
-            }
+        builder.addSection(parseConfigSection(typeElement));
+        continue;
+      }
 
-            if (innerClassElement == element) {
-                // The declared type is a section; therefor we apply our own logic instead of just serializing
-                builder.setIsSectionAccessor(true);
-                return builder.build();
-            }
+      if (element instanceof VariableElement variable) {
+        builder.addField(parseField(classElement, variable));
+      }
+    }
+
+    return builder.build();
+  }
+
+  @Override
+  @NullUnmarked
+  public @NonNull ConfigField parseField(@NonNull TypeElement classElement, @NonNull VariableElement variable) throws ProcessorException {
+    ConfigField.Builder builder = ConfigFieldImpl.builder(
+        FieldType.ofTypeMirror(variable.asType(), messager, typesUtil),
+        variable.getSimpleName().toString()
+    );
+
+    CustomParse customParse = variable.getAnnotation(CustomParse.class);
+    if (customParse != null) {
+      for (Element enclosedElement : classElement.getEnclosedElements()) {
+        if (!(enclosedElement instanceof ExecutableElement methodElement)) {
+          continue;
         }
 
+        if (methodElement.getSimpleName().contentEquals(customParse.value())) {
+          return populateCustomParseMethod(builder, methodElement, 1, CustomParseMethodType.CUSTOM_PARSE);
+        }
+      }
+    }
+
+    if (!(variable.asType() instanceof DeclaredType declaredType)) {
+      // Primitives will never have any custom implementations
+      return builder.build();
+    }
+
+    Element element = declaredType.asElement();
+
+    // Check if the class is a custom type
+    if (element.getAnnotation(CustomType.class) != null) {
+      for (Element subElement : element.getEnclosedElements()) {
+        if (!(subElement instanceof ExecutableElement methodElement)) {
+          continue;
+        }
+
+        if (methodElement.getAnnotation(CustomTypeReturn.class) != null) {
+          // This is the custom method
+          return populateCustomParseMethod(builder, methodElement, 0, CustomParseMethodType.CUSTOM_TYPE);
+        }
+      }
+    }
+
+    // Check if the class is an inner class of the config class --> section
+    for (Element subElement : classElement.getEnclosedElements()) {
+      if (!(subElement instanceof TypeElement innerClassElement)) {
+        continue;
+      }
+
+      if (innerClassElement == element) {
+        // The declared type is a section; therefor we apply our own logic instead of just serializing
+        builder.setIsSectionAccessor(true);
         return builder.build();
+      }
     }
 
-    @NonNull
-    private ConfigField populateCustomParseMethod(ConfigField.Builder builder, ExecutableElement methodElement, int firstParam, CustomParseMethodType type) {
-        builder.setCustomParseMethod(methodElement);
-        builder.setFieldType(FieldType.ofTypeMirror(methodElement.getReturnType(), messager, typesUtil));
+    return builder.build();
+  }
 
-        List<? extends VariableElement> parameters = methodElement.getParameters();
-        for (int i = firstParam; i < parameters.size(); i++) {
-            VariableElement parameter = parameters.get(i);
-            builder.addMethodParameter(new ParameterImpl(
-                FieldType.ofTypeMirror(parameter.asType(), messager, typesUtil),
-                parameter.getSimpleName().toString()
-            ));
-        }
+  @NonNull
+  private ConfigField populateCustomParseMethod(ConfigField.Builder builder, ExecutableElement methodElement, int firstParam, CustomParseMethodType type) {
+    builder.setCustomParseMethod(methodElement);
+    builder.setFieldType(FieldType.ofTypeMirror(methodElement.getReturnType(), messager, typesUtil));
 
-        builder.setCustomParseMethodType(type);
-        builder.setIsVarArgs(methodElement.isVarArgs());
-        return builder.build();
+    List<? extends VariableElement> parameters = methodElement.getParameters();
+    for (int i = firstParam; i < parameters.size(); i++) {
+      VariableElement parameter = parameters.get(i);
+      builder.addMethodParameter(new ParameterImpl(
+          FieldType.ofTypeMirror(parameter.asType(), messager, typesUtil),
+          parameter.getSimpleName().toString()
+      ));
     }
 
-    @Override
-    @NullUnmarked
-    public net.strokkur.config.internal.intermediate.@NonNull CustomType parseCustomType(@NonNull TypeElement classElement) throws ProcessorException {
-        CustomTypeImpl impl = new CustomTypeImpl();
-        impl.setDefaultNonNull(classElement.getAnnotation(ConfigNullable.class) != null);
+    builder.setCustomParseMethodType(type);
+    builder.setIsVarArgs(methodElement.isVarArgs());
+    return builder.build();
+  }
 
-        for (Element element : classElement.getEnclosedElements()) {
-            if (element instanceof VariableElement parameter) {
-                impl.addConfigField(parseField(classElement, parameter));
-                continue;
-            }
+  @Override
+  @NullUnmarked
+  public net.strokkur.config.internal.intermediate.@NonNull CustomType parseCustomType(@NonNull TypeElement classElement) throws ProcessorException {
+    CustomTypeImpl impl = new CustomTypeImpl();
+    impl.setDefaultNonNull(classElement.getAnnotation(ConfigNullable.class) != null);
 
-            if (element instanceof ExecutableElement executable && element.getAnnotation(CustomType.class) != null) {
-                impl.setReturnElement(executable);
-            }
-        }
+    for (Element element : classElement.getEnclosedElements()) {
+      if (element instanceof VariableElement parameter) {
+        impl.addConfigField(parseField(classElement, parameter));
+        continue;
+      }
 
-        return impl;
+      if (element instanceof ExecutableElement executable && element.getAnnotation(CustomType.class) != null) {
+        impl.setReturnElement(executable);
+      }
     }
 
-    @Override
-    @NullUnmarked
-    public @NonNull ConfigSection parseConfigSection(@NonNull TypeElement classElement) throws ProcessorException {
-        ConfigSectionImpl impl = new ConfigSectionImpl(classElement.getSimpleName().toString());
-        impl.setDefaultNonNull(classElement.getAnnotation(ConfigNullable.class) != null);
+    return impl;
+  }
 
-        for (Element element : classElement.getEnclosedElements()) {
-            if (element instanceof VariableElement parameter) {
-                impl.addField(parseField(classElement, parameter));
-            }
-        }
+  @Override
+  @NullUnmarked
+  public @NonNull ConfigSection parseConfigSection(@NonNull TypeElement classElement) throws ProcessorException {
+    ConfigSectionImpl impl = new ConfigSectionImpl(classElement.getSimpleName().toString());
+    impl.setDefaultNonNull(classElement.getAnnotation(ConfigNullable.class) != null);
 
-        return impl;
+    for (Element element : classElement.getEnclosedElements()) {
+      if (element instanceof VariableElement parameter) {
+        impl.addField(parseField(classElement, parameter));
+      }
     }
 
-    @NullUnmarked
-    private @NonNull ConfigMetadata getMetadata(@NonNull TypeElement classElement) throws ProcessorException {
-        GenerateConfig generateConfig = classElement.getAnnotation(GenerateConfig.class);
-        String packageName = ((PackageElement) classElement.getEnclosingElement()).getQualifiedName().toString();
+    return impl;
+  }
 
-        Format format = Format.HOCON;
-        net.strokkur.config.annotations.ConfigFormat configFormatAnnotation = classElement.getAnnotation(net.strokkur.config.annotations.ConfigFormat.class);
-        if (configFormatAnnotation != null) {
-            format = configFormatAnnotation.value();
-        }
+  @NullUnmarked
+  private @NonNull ConfigMetadata getMetadata(@NonNull TypeElement classElement) throws ProcessorException {
+    GenerateConfig generateConfig = classElement.getAnnotation(GenerateConfig.class);
+    String packageName = ((PackageElement) classElement.getEnclosingElement()).getQualifiedName().toString();
 
-        ConfigFilePath filePath = classElement.getAnnotation(ConfigFilePath.class);
-        String path = null;
-        if (filePath != null && !filePath.value().isBlank()) {
-            path = filePath.value();
-        }
-
-        CustomSerializers customSerializers = null;
-        if (format == Format.CUSTOM) {
-            ExecutableElement serializerMethod = null;
-            ExecutableElement deserializerMethod = null;
-
-            for (Element element : classElement.getEnclosedElements()) {
-                if (!(element instanceof ExecutableElement methodElement) || !methodElement.getModifiers().contains(Modifier.STATIC)) {
-                    continue;
-                }
-
-                if (methodElement.getAnnotation(CustomSerializer.class) != null) {
-                    if (serializerMethod != null) {
-                        throw new ProcessorException("Duplicate declaration of serializer method", methodElement);
-                    }
-
-                    if (!Objects.equals(methodElement.getReturnType(), elementUtils.getTypeElement("java.lang.String").asType())) {
-                        throw new ProcessorException("Invalid return type for serializer method. Must be java.lang.String", methodElement);
-                    }
-
-                    List<? extends VariableElement> params = methodElement.getParameters();
-                    if (params.size() != 1) {
-                        throw new ProcessorException("Invalid number of parameters for serializer method. Must contain only one", methodElement);
-                    }
-
-                    if (!Objects.equals(params.getFirst().asType(), classElement.asType())) {
-                        throw new ProcessorException("Invalid parameters for serializer method. Must be " + classElement.getQualifiedName().toString(), params.getFirst());
-                    }
-
-                    serializerMethod = methodElement;
-                    continue;
-                }
-
-                if (methodElement.getAnnotation(CustomDeserializer.class) != null) {
-                    if (deserializerMethod != null) {
-                        throw new ProcessorException("Duplicate declaration of deserializer method", methodElement);
-                    }
-
-                    if (!Objects.equals(methodElement.getReturnType(), classElement.asType())) {
-                        throw new ProcessorException("Invalid return type for deserializer method. Must be " + classElement.getQualifiedName().toString(), methodElement);
-                    }
-
-                    List<? extends VariableElement> params = methodElement.getParameters();
-                    if (params.size() != 1) {
-                        throw new ProcessorException("Invalid number of parameters for deserializer method. Must contain only one", methodElement);
-                    }
-
-                    if (!Objects.equals(params.getFirst().asType(), elementUtils.getTypeElement("java.lang.String").asType())) {
-                        throw new ProcessorException("Invalid parameters for deserializer method. Must be java.lang.String", params.getFirst());
-                    }
-
-                    deserializerMethod = methodElement;
-                }
-            }
-
-            if (serializerMethod == null || deserializerMethod == null) {
-                throw new ProcessorException("A class with a custom format must include static methods annotated with @CustomSerializer and @CustomDeserializer!", classElement);
-            }
-
-            customSerializers = new CustomSerializersImpl(serializerMethod, deserializerMethod);
-        }
-
-        boolean defaultNonNull = classElement.getAnnotation(ConfigNullable.class) == null;
-
-        String modelClassName = classElement.getSimpleName().toString();
-        String newClassName = generateConfig.value().isBlank()
-            ? modelClassName.endsWith("Model") ? modelClassName.substring(0, modelClassName.length() - 5) : modelClassName + "Config"
-            : generateConfig.value();
-
-        return new ConfigMetadataImpl(
-            modelClassName,
-            packageName,
-            newClassName,
-            ConfigFormat.getFromEnum(format),
-            path,
-            defaultNonNull,
-            customSerializers
-        );
+    net.strokkur.config.ConfigFormat.Format format = net.strokkur.config.ConfigFormat.Format.HOCON;
+    net.strokkur.config.ConfigFormat configFormatAnnotation = classElement.getAnnotation(net.strokkur.config.ConfigFormat.class);
+    if (configFormatAnnotation != null) {
+      format = configFormatAnnotation.value();
     }
+
+    ConfigFilePath filePath = classElement.getAnnotation(ConfigFilePath.class);
+    String path = null;
+    if (filePath != null && !filePath.value().isBlank()) {
+      path = filePath.value();
+    }
+
+    CustomSerializers customSerializers = null;
+    if (format == net.strokkur.config.ConfigFormat.Format.CUSTOM) {
+      ExecutableElement serializerMethod = null;
+      ExecutableElement deserializerMethod = null;
+
+      for (Element element : classElement.getEnclosedElements()) {
+        if (!(element instanceof ExecutableElement methodElement) || !methodElement.getModifiers().contains(Modifier.STATIC)) {
+          continue;
+        }
+
+        if (methodElement.getAnnotation(CustomSerializer.class) != null) {
+          if (serializerMethod != null) {
+            throw new ProcessorException("Duplicate declaration of serializer method", methodElement);
+          }
+
+          if (!Objects.equals(methodElement.getReturnType(), elementUtils.getTypeElement("java.lang.String").asType())) {
+            throw new ProcessorException("Invalid return type for serializer method. Must be java.lang.String", methodElement);
+          }
+
+          List<? extends VariableElement> params = methodElement.getParameters();
+          if (params.size() != 1) {
+            throw new ProcessorException("Invalid number of parameters for serializer method. Must contain only one", methodElement);
+          }
+
+          if (!Objects.equals(params.getFirst().asType(), classElement.asType())) {
+            throw new ProcessorException("Invalid parameters for serializer method. Must be " + classElement.getQualifiedName().toString(), params.getFirst());
+          }
+
+          serializerMethod = methodElement;
+          continue;
+        }
+
+        if (methodElement.getAnnotation(CustomDeserializer.class) != null) {
+          if (deserializerMethod != null) {
+            throw new ProcessorException("Duplicate declaration of deserializer method", methodElement);
+          }
+
+          if (!Objects.equals(methodElement.getReturnType(), classElement.asType())) {
+            throw new ProcessorException("Invalid return type for deserializer method. Must be " + classElement.getQualifiedName().toString(), methodElement);
+          }
+
+          List<? extends VariableElement> params = methodElement.getParameters();
+          if (params.size() != 1) {
+            throw new ProcessorException("Invalid number of parameters for deserializer method. Must contain only one", methodElement);
+          }
+
+          if (!Objects.equals(params.getFirst().asType(), elementUtils.getTypeElement("java.lang.String").asType())) {
+            throw new ProcessorException("Invalid parameters for deserializer method. Must be java.lang.String", params.getFirst());
+          }
+
+          deserializerMethod = methodElement;
+        }
+      }
+
+      if (serializerMethod == null || deserializerMethod == null) {
+        throw new ProcessorException("A class with a custom format must include static methods annotated with @CustomSerializer and @CustomDeserializer!", classElement);
+      }
+
+      customSerializers = new CustomSerializersImpl(serializerMethod, deserializerMethod);
+    }
+
+    boolean defaultNonNull = classElement.getAnnotation(ConfigNullable.class) == null;
+
+    String modelClassName = classElement.getSimpleName().toString();
+    String newClassName = generateConfig.value().isBlank()
+        ? modelClassName.endsWith("Model") ? modelClassName.substring(0, modelClassName.length() - 5) : modelClassName + "Config"
+        : generateConfig.value();
+
+    return new ConfigMetadataImpl(
+        modelClassName,
+        packageName,
+        newClassName,
+        ConfigFormat.getFromEnum(format),
+        path,
+        defaultNonNull,
+        customSerializers
+    );
+  }
 }

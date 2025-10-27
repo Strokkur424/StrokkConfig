@@ -22,11 +22,15 @@ import java.util.Set;
 
 public interface SharedSourcePrinter extends SourcePrinter {
 
-    Set<String> getAllImports();
-    Set<String> getStandardImports();
+  Set<String> getAllImports();
 
-    void printPackage() throws IOException;
-    void printImports() throws IOException;
-    void printClassJavaDoc() throws IOException;
-    void printClassDeclaration() throws IOException;
+  Set<String> getStandardImports();
+
+  void printPackage() throws IOException;
+
+  void printImports() throws IOException;
+
+  void printClassJavaDoc() throws IOException;
+
+  void printClassDeclaration() throws IOException;
 }

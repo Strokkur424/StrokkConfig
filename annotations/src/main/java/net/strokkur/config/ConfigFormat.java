@@ -17,13 +17,27 @@
  */
 package net.strokkur.config;
 
-import net.strokkur.config.annotations.CustomDeserializer;
-import net.strokkur.config.annotations.CustomSerializer;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * The format of the configuration file.
+ * An annotation for declaring the used configuration language.
  */
-public enum Format {
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.SOURCE)
+public @interface ConfigFormat {
+
+  /**
+   * The language. Defaults to {@code Language.HOCON} if not set.
+   */
+  Format value() default Format.YAML_SNAKEYAML;
+
+  /**
+   * The format of the configuration file.
+   */
+  enum Format {
 
     /**
      * Yaml Ain't Markup Language.
@@ -82,4 +96,5 @@ public enum Format {
      * }</pre>
      */
     CUSTOM
+  }
 }

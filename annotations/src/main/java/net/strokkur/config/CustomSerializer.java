@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
-package net.strokkur.config.annotations;
+package net.strokkur.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,14 +23,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to annotate a configurable class to generate configuration logic for it.
+ * Annotation given to a serialization method for a {@link ConfigFormat.Format#CUSTOM} format.
+ * <p>
+ * The annotated method must be at least package-private and the first parameter
+ * should be the type of the config model class for accepting the concrete object. The method
+ * should return a {@link String}.
+ * <p>
+ * Example method:
+ * <pre>{@code
+ * @CustomSerializer
+ * static String serialize(ConfigModel model) throws IOException {
+ *     return model.someValue;
+ * }
+ * }</pre>
  */
 @Retention(RetentionPolicy.SOURCE)
-@Target(ElementType.TYPE)
-public @interface GenerateConfig {
-
-    /**
-     * The name of the generated configuration interface.
-     */
-    String value() default "";
-}
+@Target(ElementType.METHOD)
+public @interface CustomSerializer {}

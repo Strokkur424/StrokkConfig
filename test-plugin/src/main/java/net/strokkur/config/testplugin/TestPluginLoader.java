@@ -27,12 +27,12 @@ import org.eclipse.aether.repository.RemoteRepository;
 @SuppressWarnings("UnstableApiUsage")
 public class TestPluginLoader implements PluginLoader {
 
-    @Override
-    public void classloader(PluginClasspathBuilder classpathBuilder) {
-        final MavenLibraryResolver resolver = new MavenLibraryResolver();
-        resolver.addRepository(new RemoteRepository.Builder("central", "default", MavenLibraryResolver.MAVEN_CENTRAL_DEFAULT_MIRROR).build());
-        resolver.addDependency(new Dependency(new DefaultArtifact("org.spongepowered:configurate-hocon:" + Versions.CONFIGURATE), null));
-        resolver.addDependency(new Dependency(new DefaultArtifact("org.spongepowered:configurate-yaml:" + Versions.CONFIGURATE), null));
-        classpathBuilder.addLibrary(resolver);
-    }
+  @Override
+  public void classloader(PluginClasspathBuilder classpathBuilder) {
+    final MavenLibraryResolver resolver = new MavenLibraryResolver();
+    resolver.addRepository(new RemoteRepository.Builder("central", "default", MavenLibraryResolver.MAVEN_CENTRAL_DEFAULT_MIRROR).build());
+    resolver.addDependency(new Dependency(new DefaultArtifact("org.spongepowered:configurate-hocon:" + Versions.CONFIGURATE), null));
+    resolver.addDependency(new Dependency(new DefaultArtifact("org.spongepowered:configurate-yaml:" + Versions.CONFIGURATE), null));
+    classpathBuilder.addLibrary(resolver);
+  }
 }

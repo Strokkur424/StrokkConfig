@@ -26,35 +26,35 @@ import java.util.List;
 
 public class ConfigSectionImpl implements ConfigSection {
 
-    private final String sectionName;
-    private final List<ConfigField> fields = new ArrayList<>();
-    private boolean nonNull = true;
+  private final String sectionName;
+  private final List<ConfigField> fields = new ArrayList<>();
+  private boolean nonNull = true;
 
-    public ConfigSectionImpl(String sectionName) {
-        this.sectionName = sectionName;
-    }
+  public ConfigSectionImpl(String sectionName) {
+    this.sectionName = sectionName;
+  }
 
-    @Override
-    public void addField(ConfigField field) {
-        fields.add(field);
-    }
+  @Override
+  public void addField(ConfigField field) {
+    fields.add(field);
+  }
 
-    @Override
-    public String getSectionName() {
-        return sectionName;
-    }
+  @Override
+  public String getSectionName() {
+    return sectionName;
+  }
 
-    @Override
-    public boolean isDefaultNonNull() {
-        return nonNull;
-    }
+  @Override
+  public boolean isDefaultNonNull() {
+    return nonNull;
+  }
 
-    public void setDefaultNonNull(boolean value) {
-        this.nonNull = value;
-    }
+  public void setDefaultNonNull(boolean value) {
+    this.nonNull = value;
+  }
 
-    @Override
-    public List<ConfigField> getFields() {
-        return Collections.unmodifiableList(fields);
-    }
+  @Override
+  public List<ConfigField> getFields() {
+    return Collections.unmodifiableList(fields);
+  }
 }

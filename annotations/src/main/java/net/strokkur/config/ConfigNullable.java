@@ -15,9 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
-package net.strokkur.config.annotations;
-
-import net.strokkur.config.Format;
+package net.strokkur.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -25,14 +23,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation for declaring the used configuration language.
+ * An annotation of declaring that a configuration/value/parse method should be treated
+ * as nullable. Otherwise, a null value will throw an exception.
  */
-@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.SOURCE)
-public @interface ConfigFormat {
-
-    /**
-     * The language. Defaults to {@code Language.HOCON} if not set.
-     */
-    Format value() default Format.HOCON;
-}
+@Target({ElementType.FIELD, ElementType.TYPE, ElementType.METHOD})
+public @interface ConfigNullable {}

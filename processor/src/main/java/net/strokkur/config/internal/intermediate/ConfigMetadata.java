@@ -24,20 +24,20 @@ import org.jspecify.annotations.Nullable;
  */
 public interface ConfigMetadata {
 
-    String getFilePath();
+  String getFilePath();
 
-    String getPackage();
+  String getPackage();
 
-    String getOriginalClass();
+  String getOriginalClass();
 
-    String getInterfaceClass();
+  String getInterfaceClass();
 
-    String getImplementationClass();
+  String getImplementationClass();
 
-    ConfigFormat getFormat();
+  ConfigFormat getFormat();
 
-    @Nullable
-    CustomSerializers getCustomSerializers();
+  @Nullable
+  CustomSerializers getCustomSerializers();
 
-    boolean isDefaultNonNull();
+  boolean isDefaultNonNull();
 }

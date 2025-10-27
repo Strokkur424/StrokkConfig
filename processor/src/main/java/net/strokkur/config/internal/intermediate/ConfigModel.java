@@ -24,20 +24,23 @@ import java.util.List;
  */
 public interface ConfigModel {
 
-    ConfigMetadata getMetadata();
+  ConfigMetadata getMetadata();
 
-    List<ConfigField> getFields();
+  List<ConfigField> getFields();
 
-    List<CustomType> getCustomTypes();
+  List<CustomType> getCustomTypes();
 
-    List<ConfigSection> getSections();
+  List<ConfigSection> getSections();
 
-    interface Builder {
-        Builder setMetadata(ConfigMetadata metadata);
-        Builder addField(ConfigField field);
-        Builder addCustomType(CustomType type);
-        Builder addSection(ConfigSection section);
+  interface Builder {
+    Builder setMetadata(ConfigMetadata metadata);
 
-        ConfigModel build();
-    }
+    Builder addField(ConfigField field);
+
+    Builder addCustomType(CustomType type);
+
+    Builder addSection(ConfigSection section);
+
+    ConfigModel build();
+  }
 }

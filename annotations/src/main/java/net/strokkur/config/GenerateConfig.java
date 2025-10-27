@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  */
-package net.strokkur.config.annotations;
+package net.strokkur.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,9 +23,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation of declaring that a configuration/value/parse method should be treated
- * as not nullable, meaning a null value will throw an exception.
+ * Used to annotate a configurable class to generate configuration logic for it.
  */
 @Retention(RetentionPolicy.SOURCE)
-@Target({ElementType.FIELD, ElementType.TYPE, ElementType.METHOD})
-public @interface ConfigNonNull {}
+@Target(ElementType.TYPE)
+public @interface GenerateConfig {
+
+  /**
+   * The name of the generated configuration interface.
+   */
+  String value() default "";
+}

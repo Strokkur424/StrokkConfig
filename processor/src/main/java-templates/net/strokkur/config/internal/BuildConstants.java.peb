@@ -1,5 +1,5 @@
 package net.strokkur.config.internal;
     
 public class BuildConstants {
-    public static String VERSION = "{{ version }}";
+  public static String VERSION = "{{ version }}";
 }

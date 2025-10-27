@@ -3,11 +3,8 @@
 
 # Ignore Gradle build output directory
 build
-**/run
+run
 
 # Ignore IntelliJ files
 .idea
 *.iml
-
-# Ignore node_modules
-node_modules

@@ -27,47 +27,46 @@ import java.util.Set;
 
 public class SourcePrinterYamlConfigurate extends AbstractImplementationSourcePrinter {
 
-    public SourcePrinterYamlConfigurate(@Nullable Writer writer, ConfigModel model, MessagerWrapper messager) {
-        super(writer, model, messager);
-    }
+  public SourcePrinterYamlConfigurate(@Nullable Writer writer, ConfigModel model, MessagerWrapper messager) {
+    super(writer, model, messager);
+  }
 
-    @Override
-    protected Set<String> getImplementationImports() {
-        return Set.of(
-            "org.spongepowered.configurate.CommentedConfigurationNode",
-            "org.spongepowered.configurate.ConfigurationOptions",
-            "org.spongepowered.configurate.yaml.YamlConfigurationLoader",
-            "org.spongepowered.configurate.yaml.NodeStyle"
-        );
-    }
+  @Override
+  protected Set<String> getImplementationImports() {
+    return Set.of(
+        "org.spongepowered.configurate.CommentedConfigurationNode",
+        "org.spongepowered.configurate.ConfigurationOptions",
+        "org.spongepowered.configurate.yaml.YamlConfigurationLoader",
+        "org.spongepowered.configurate.yaml.NodeStyle"
+    );
+  }
 
-    @Override
-    protected void printImplementationDependantReloadImpl() throws IOException {
-        printBlock("""
-                YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
-                    .path(path)
-                    .indent(2)
-                    .nodeStyle(NodeStyle.BLOCK)
-                    .build();
-                
-                CommentedConfigurationNode node = loader.load(ConfigurationOptions.defaults());
-                model = node.get({}.class);
-                
-                if (!Files.exists(path)) {
-                    // If the file doesn't exist, create it
-                    model = new {}();
-                    node.set(model);
-                    loader.save(node);
-                }""",
-            model.getMetadata().getOriginalClass(),
-            model.getMetadata().getOriginalClass(),
-            model.getMetadata().getOriginalClass()
-        );
-    }
+  @Override
+  protected void printImplementationDependantReloadImpl() throws IOException {
+    printBlock("""
+            YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                .path(path)
+                .indent(2)
+                .nodeStyle(NodeStyle.BLOCK)
+                .build();
+            
+            CommentedConfigurationNode node = loader.load(ConfigurationOptions.defaults());
+            model = node.get({}.class);
+            
+            if (!Files.exists(path)) {
+                // If the file doesn't exist, create it
+                model = new {}();
+                node.set(model);
+                loader.save(node);
+            }""",
+        model.getMetadata().getOriginalClass(),
+        model.getMetadata().getOriginalClass(),
+        model.getMetadata().getOriginalClass()
+    );
+  }
 
-    @Override
-    protected void printExtra() throws IOException {
+  @Override
+  protected void printExtra() throws IOException {
 
-
-    }
+  }
 }

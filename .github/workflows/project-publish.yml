@@ -1,8 +1,9 @@
-name: build
+name: publish
 
 on:
-  push:
-    branches: [ "**" ]
+  workflow_dispatch:
+  release:
+    tags: [ "**" ]
 
 permissions:
   contents: read
@@ -11,6 +12,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    environment: publish
 
     steps:
       - name: Checkout
@@ -25,5 +27,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build with Gradle Wrapper
-        run: ./gradlew build
+      - name: Publish to EldoNexus
+        run: ./gradlew publish
+        env:
+          SKIP_TEST: true

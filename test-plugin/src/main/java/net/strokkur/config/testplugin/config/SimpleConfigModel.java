@@ -17,12 +17,11 @@
  */
 package net.strokkur.config.testplugin.config;
 
-import net.strokkur.config.Format;
-import net.strokkur.config.annotations.ConfigFormat;
-import net.strokkur.config.annotations.GenerateConfig;
+import net.strokkur.config.ConfigFormat;
+import net.strokkur.config.GenerateConfig;
 
 @GenerateConfig
-@ConfigFormat(Format.YAML_SNAKEYAML)
+@ConfigFormat(ConfigFormat.Format.YAML_SNAKEYAML)
 class SimpleConfigModel {
-    String helloWorld = "Hello, Config!";
+  String helloWorld = "Hello, Config!";
 }

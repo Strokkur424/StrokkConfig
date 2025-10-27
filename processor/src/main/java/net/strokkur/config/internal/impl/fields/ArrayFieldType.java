@@ -27,33 +27,33 @@ import java.util.Set;
 
 public class ArrayFieldType implements FieldType {
 
-    private final FieldType componentFieldType;
-    private final int levelsOfNesting;
+  private final FieldType componentFieldType;
+  private final int levelsOfNesting;
 
-    public ArrayFieldType(MessagerWrapper messagerWrapper, ArrayType type, Types types) {
-        int nesting = 0;
-        TypeMirror declared = type;
-        while (declared instanceof ArrayType arrayType) {
-            declared = arrayType.getComponentType();
-            nesting++;
-        }
-
-        componentFieldType = FieldType.ofTypeMirror(declared, messagerWrapper, types);
-        levelsOfNesting = nesting;
+  public ArrayFieldType(MessagerWrapper messagerWrapper, ArrayType type, Types types) {
+    int nesting = 0;
+    TypeMirror declared = type;
+    while (declared instanceof ArrayType arrayType) {
+      declared = arrayType.getComponentType();
+      nesting++;
     }
 
-    @Override
-    public String getFullyQualifiedName() {
-        return componentFieldType.getFullyQualifiedName() + "[]".repeat(levelsOfNesting);
-    }
+    componentFieldType = FieldType.ofTypeMirror(declared, messagerWrapper, types);
+    levelsOfNesting = nesting;
+  }
 
-    @Override
-    public String getSimpleNameParameterized() {
-        return componentFieldType.getSimpleNameParameterized() + "[]".repeat(levelsOfNesting);
-    }
+  @Override
+  public String getFullyQualifiedName() {
+    return componentFieldType.getFullyQualifiedName() + "[]".repeat(levelsOfNesting);
+  }
 
-    @Override
-    public Set<String> getImports() {
-        return componentFieldType.getImports();
-    }
+  @Override
+  public String getSimpleNameParameterized() {
+    return componentFieldType.getSimpleNameParameterized() + "[]".repeat(levelsOfNesting);
+  }
+
+  @Override
+  public Set<String> getImports() {
+    return componentFieldType.getImports();
+  }
 }

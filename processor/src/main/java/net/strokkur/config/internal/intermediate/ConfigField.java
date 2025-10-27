@@ -28,31 +28,38 @@ import java.util.List;
  */
 public interface ConfigField extends FieldNameContainer {
 
-    FieldType getFieldType();
+  FieldType getFieldType();
 
-    List<Parameter> getMethodParameters();
+  List<Parameter> getMethodParameters();
 
-    boolean isNullable();
+  boolean isNullable();
 
-    boolean isSectionAccessor();
+  boolean isSectionAccessor();
 
-    boolean isVarArgs();
+  boolean isVarArgs();
 
-    @Nullable
-    ExecutableElement getCustomParseMethod();
+  @Nullable
+  ExecutableElement getCustomParseMethod();
 
-    CustomParseMethodType getCustomParseMethodType();
+  CustomParseMethodType getCustomParseMethodType();
 
-    interface Builder {
-        Builder setFieldType(FieldType fieldType);
-        Builder setFieldName(String fieldName);
-        Builder addMethodParameter(Parameter type);
-        Builder setNullable(boolean value);
-        Builder setCustomParseMethod(ExecutableElement customParseMethod);
-        Builder setIsSectionAccessor(boolean value);
-        Builder setIsVarArgs(boolean value);
-        Builder setCustomParseMethodType(CustomParseMethodType customParseMethodType);
+  interface Builder {
+    Builder setFieldType(FieldType fieldType);
 
-        ConfigField build();
-    }
+    Builder setFieldName(String fieldName);
+
+    Builder addMethodParameter(Parameter type);
+
+    Builder setNullable(boolean value);
+
+    Builder setCustomParseMethod(ExecutableElement customParseMethod);
+
+    Builder setIsSectionAccessor(boolean value);
+
+    Builder setIsVarArgs(boolean value);
+
+    Builder setCustomParseMethodType(CustomParseMethodType customParseMethodType);
+
+    ConfigField build();
+  }
 }

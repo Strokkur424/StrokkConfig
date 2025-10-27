@@ -17,7 +17,7 @@
  */
 package net.strokkur.config.internal;
 
-import net.strokkur.config.annotations.GenerateConfig;
+import net.strokkur.config.GenerateConfig;
 import net.strokkur.config.internal.exceptions.ProcessorException;
 import net.strokkur.config.internal.impl.printer.InterfaceSourcePrinterImpl;
 import net.strokkur.config.internal.intermediate.ConfigModel;
@@ -39,55 +39,55 @@ import java.util.Set;
 
 public class StrokkConfigProcessor extends AbstractProcessor {
 
-    @Override
-    public Set<String> getSupportedAnnotationTypes() {
-        return Set.of(GenerateConfig.class.getCanonicalName());
+  @Override
+  public Set<String> getSupportedAnnotationTypes() {
+    return Set.of(GenerateConfig.class.getCanonicalName());
+  }
+
+  @Override
+  public SourceVersion getSupportedSourceVersion() {
+    return SourceVersion.RELEASE_21;
+  }
+
+  @Override
+  public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    Elements elementUtil = super.processingEnv.getElementUtils();
+    Types typesUtil = super.processingEnv.getTypeUtils();
+
+    MessagerWrapper messagerWrapper = MessagerWrapper.wrap(super.processingEnv.getMessager());
+    AnnotationParser parser = new AnnotationParserImpl(messagerWrapper, elementUtil, typesUtil);
+
+    Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(GenerateConfig.class);
+    List<ConfigModel> parsedList = new ArrayList<>(annotated.size());
+
+    for (Element element : annotated) {
+      if (!(element instanceof TypeElement classElement)) {
+        continue;
+      }
+
+      try {
+        parsedList.add(parser.parseClass(classElement));
+      } catch (ProcessorException e) {
+        e.error(messagerWrapper);
+      }
     }
 
-    @Override
-    public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.RELEASE_21;
+    for (ConfigModel model : parsedList) {
+      JavaFilePrinter interfacePrinter = new JavaFilePrinter(
+          model, w -> new InterfaceSourcePrinterImpl(w, model, messagerWrapper), model.getMetadata().getInterfaceClass(), super.processingEnv.getFiler(), messagerWrapper
+      );
+      JavaFilePrinter implementationPrinter = new JavaFilePrinter(
+          model,
+          w -> model.getMetadata().getFormat().getSourcesPrinter(w, model, messagerWrapper),
+          model.getMetadata().getImplementationClass(),
+          super.processingEnv.getFiler(),
+          messagerWrapper
+      );
+
+      interfacePrinter.print();
+      implementationPrinter.print();
     }
 
-    @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        Elements elementUtil = super.processingEnv.getElementUtils();
-        Types typesUtil = super.processingEnv.getTypeUtils();
-
-        MessagerWrapper messagerWrapper = MessagerWrapper.wrap(super.processingEnv.getMessager());
-        AnnotationParser parser = new AnnotationParserImpl(messagerWrapper, elementUtil, typesUtil);
-
-        Set<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(GenerateConfig.class);
-        List<ConfigModel> parsedList = new ArrayList<>(annotated.size());
-
-        for (Element element : annotated) {
-            if (!(element instanceof TypeElement classElement)) {
-                continue;
-            }
-
-            try {
-                parsedList.add(parser.parseClass(classElement));
-            } catch (ProcessorException e) {
-                e.error(messagerWrapper);
-            }
-        }
-
-        for (ConfigModel model : parsedList) {
-            JavaFilePrinter interfacePrinter = new JavaFilePrinter(
-                model, w -> new InterfaceSourcePrinterImpl(w, model, messagerWrapper), model.getMetadata().getInterfaceClass(), super.processingEnv.getFiler(), messagerWrapper
-            );
-            JavaFilePrinter implementationPrinter = new JavaFilePrinter(
-                model,
-                w -> model.getMetadata().getFormat().getSourcesPrinter(w, model, messagerWrapper),
-                model.getMetadata().getImplementationClass(),
-                super.processingEnv.getFiler(),
-                messagerWrapper
-            );
-
-            interfacePrinter.print();
-            implementationPrinter.print();
-        }
-
-        return true;
-    }
+    return true;
+  }
 }

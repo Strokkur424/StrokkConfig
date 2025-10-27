@@ -27,10 +27,10 @@ import java.util.List;
  */
 public interface CustomType {
 
-    boolean isDefaultNonNull();
+  boolean isDefaultNonNull();
 
-    List<ConfigField> getFields();
+  List<ConfigField> getFields();
 
-    @Nullable
-    ExecutableElement getTypeReturn();
+  @Nullable
+  ExecutableElement getTypeReturn();
 }

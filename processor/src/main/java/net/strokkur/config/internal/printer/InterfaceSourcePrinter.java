@@ -25,25 +25,30 @@ import java.util.Set;
 
 public interface InterfaceSourcePrinter extends SharedSourcePrinter {
 
-    Set<String> STANDARD_INTERFACE_IMPORTS = Set.of(
-        "org.bukkit.plugin.java.JavaPlugin",
-        "org.jspecify.annotations.NullMarked",
-        "java.io.IOException"
-    );
+  Set<String> STANDARD_INTERFACE_IMPORTS = Set.of(
+      "org.bukkit.plugin.java.JavaPlugin",
+      "org.jspecify.annotations.NullMarked",
+      "java.io.IOException"
+  );
 
-    @Override
-    default Set<String> getStandardImports() {
-        return STANDARD_INTERFACE_IMPORTS;
-    }
+  @Override
+  default Set<String> getStandardImports() {
+    return STANDARD_INTERFACE_IMPORTS;
+  }
 
-    void printClassJavaDoc() throws IOException;
-    void printClassDeclaration() throws IOException;
+  void printClassJavaDoc() throws IOException;
 
-    void printFilePath() throws IOException;
-    void printReloading() throws IOException;
-    void printAccessMethods() throws IOException;
-    void printNestedInterfaces() throws IOException;
+  void printClassDeclaration() throws IOException;
 
-    void printAccessMethod(ConfigField field) throws IOException;
-    void printSectionInterface(ConfigSection type) throws IOException;
+  void printFilePath() throws IOException;
+
+  void printReloading() throws IOException;
+
+  void printAccessMethods() throws IOException;
+
+  void printNestedInterfaces() throws IOException;
+
+  void printAccessMethod(ConfigField field) throws IOException;
+
+  void printSectionInterface(ConfigSection type) throws IOException;
 }
